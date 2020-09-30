@@ -32,7 +32,7 @@ begin
     textout(20, 235, 'Сгенерировать');
     setFontcolor(color.black);
     rectangle(10, 315, 470 , 415);
-    textout(20, 340, 'Помощь');
+    textout(20, 340, 'Помощь'); //2
     setfontsize(20);
 end; 
  
