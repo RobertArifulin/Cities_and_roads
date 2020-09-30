@@ -44,7 +44,7 @@ begin
   onmousedown := MouseDown;
   check := 0;
   
-  FirstWindow();
+  FirstWindow(); //2
   
     while N_Window = 1 do
     begin 
