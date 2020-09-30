@@ -44,7 +44,7 @@ begin
   onmousedown := MouseDown;
   check := 0;
   
-  FirstWindow();
+  FirstWindow(); // проверка репозитория
   
     while N_Window = 1 do
     begin 
