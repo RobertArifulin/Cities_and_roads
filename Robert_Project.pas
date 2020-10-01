@@ -1,75 +1,94 @@
 ﻿program Project_Robert;
-uses GraphABC, Events;
+uses GraphABC, Events, ABCButtons;
+
+const
+ BWidth = 200;
+ BHeight = 50;
+ 
 var
-N_Window, check, dif, n, b  : integer;
-endofgame : boolean;
-procedure MouseDown(x,y,mb:integer);
+N_Window, check, dif, n, i  : integer;
+
+{procedure MouseDown(x,y,mb:integer);
 begin
-  if (mb = 1) and (x < 470) and (y < 100) then check := 1;
-  if (mb = 1) and ((x < 470) and (y < 205)) and ((x > 10) and (y > 105)) then check := 2;
-  if (mb = 1) and ((x < 470) and (y < 305)) and ((x > 10) and (y > 210)) then check := 3;
-  if (mb = 1) and ((x < 470) and (y < 415)) and ((x > 10) and (y > 315)) then check := 4;
-end; 
+  if (mb = 1) and (x < x_rigth) and (y < y_down) then check := 1;//если нажали в 1-ый прямоуголник, то нажали 1-ую кнопку
+  if (mb = 1) and ((x < x_rigth) and (y < y_down * 2 + 5)) and ((x > x_left) and (y > y_up )) then check := 2; //если нажали в 2-ый прямоуголник, то нажали 2-ую кнопку
+  if (mb = 1) and ((x < x_rigth) and (y < y_down * 3 + 10)) and ((x > x_left) and (y > y_up * 2 )) then check := 3;//если нажали в 3-ый прямоуголник, то нажали 3-ую кнопку
+  if (mb = 1) and ((x < x_rigth) and (y < y_down * 4 + 15)) and ((x > x_left) and (y > y_up * 3 )) then check := 4;//если нажали в 4-ый прямоуголник, то нажали 4-ую кнопку
+end; }
  
-procedure FirstWindow();
+procedure FirstWindow(); // рисует 1-ое окно
 begin
-  SetWindowSize(480, 600); // (1366, 705)
-    SetWindowLeft(ScreenWidth div 2 - 240);
-    SetWindowTop(10);
-    setpenwidth(2);
-    rectangle(10, 5, 470 , 100);
-    setfontsize(20);
-    textout(20, 25, 'Задать сложность графа от 1 до 5');
-    textout(20, 65,'Сейчас:');
-    textout(140, 65, inttostr(dif));
-    rectangle(10, 105, 470 , 205);
-    textout(20, 130, 'Задать колличетво генераций');
-    textout(20, 170,'Сейчас:');
-    textout(140, 170, inttostr(n));
-    setFontcolor(color.Red);
-    setfontsize(30);
-    rectangle(10, 210, 470 , 305);
-    textout(20, 235, 'Сгенерировать');
-    setFontcolor(color.black);
-    rectangle(10, 315, 470 , 415);
-    textout(20, 340, 'Помощь'); //2
-    setfontsize(20);
+  SetWindowSize(480, 600); // параметры окна
+  SetWindowLeft(ScreenWidth div 2 - 240);
+  SetWindowTop(10);
 end; 
- 
+  
+procedure MainWindow(); // рисует основное окно, с графом
 begin
-  N_Window := 1;
-  dif := 1;
-  n := 1;
-  endofgame := false;
-  onmousedown := MouseDown;
-  check := 0;
-  
-  FirstWindow(); //проверка git
-  
-    while N_Window = 1 do
-    begin 
-      if check = 1 then 
-      begin
-        read(dif);
-        check := 0;
-        textout(140, 65, inttostr(dif));
-      end;
-      if check = 2 then
-      begin
-        read(n);
-        check := 0;
-        textout(140, 170, inttostr(n));
-      end;
-      if check = 3 then N_Window := 2;
-      if check = 4 then N_Window := 3;
-    end;
-    
-    check := 0;
-    SetWindowSize(1000, 600); // (1366, 705)
-    Window.clear();
+    SetWindowSize(1000, 600); // альфа версия основоного окна
     SetWindowLeft(ScreenWidth div 2 - 500);
     SetWindowTop(10);    
-    setpenwidth(2);
-    rectangle(0, 0, 200, 100);
-    while N_Window = 2  do
+    setpenwidth(1);
+    brush.color := clWhite;
+    pen.Color := clWhite; 
+    rectangle(0, 55, 1000, 505); 
+    for var i := 1 to 10 do line(0, i * 50 + 5, 1000, i * 50 + 5, argb(60,60,60,60));  
+    for var i := 1 to 20 do line(i * 50 , 55, i * 50, 505, argb(60,60,60,60)); 
+      
+      
+    
+end;
+ 
+begin
+  
+  N_Window := 1; // переменная, обозначающая какое окно открыто
+  dif := 1; // переменная, обозначающа выбранную сложность графа
+  n := 1; // переменная, обозначающая колличество генераций
+  check := 0; // переменная, обозначающая кокую кнопку нажали
+  i := 0;
+  //onmousedown := MouseDown;
+  
+  FirstWindow();
+  
+  var b1 := new ButtonABC(10, 10, BWidth * 2 + 60, BHeight * 2, 'Сгенерировать', clWhite);// основная кнопка
+  var b2_1 := new ButtonABC(10,115, BWidth + 25, BHeight * 2, 'Увеличить сложность*', argb(100,255,0,0));//// заготовки под кнопки
+  var b3_1 := new ButtonABC(10, 220, BWidth + 25, BHeight * 2, 'Увеличить Колличество *', argb(100,255,0,0));// заготовки под кнопки
+  var b2_2 := new ButtonABC(245,115, BWidth + 25, BHeight * 2, 'Уменьшить сложность*', argb(100,0,0,255));//// заготовки под кнопки
+  var b3_2 := new ButtonABC(245, 220, BWidth + 25, BHeight * 2, 'Уменьшить Колличество *', argb(100,0,0,255));// заготовки под кнопки
+  b1.OnClick := procedure ->
+  begin
+    mainwindow();
+    b1.Text := 'Сгенерировать еще';
+    b1.Height := BHeight;
+    b1.Width := BWidth - 5;   
+    b1.Position := (3,0);
+    
+    b2_1.Height := BHeight;
+    b2_1.Width := BWidth - 5;  
+    b2_1.Position := (201, 0);
+    
+    b3_1.Height := BHeight;
+    b3_1.Width := BWidth - 5;  
+    b3_1.Position := (597, 0);
+    
+    b2_2.Height := BHeight;
+    b2_2.Width := BWidth - 5;  
+    b2_2.Position := (399, 0);
+    
+    b3_2.Height := BHeight;
+    b3_2.Width := BWidth - 5;  
+    b3_2.Position := (795, 0);
+  end;
+  
+  b2_1.OnClick := procedure ->
+  begin
+    read(dif);
+  end;
+  
+  b3_1.OnClick := procedure ->
+  begin
+    mainwindow();
+    b3_1.Text := 'Сгенерировать еще'
+  end;
+  
 end.
