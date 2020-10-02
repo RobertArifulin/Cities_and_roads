@@ -2,28 +2,65 @@
 uses GraphABC, Events, ABCButtons;
 
 const
- BWidth = 200;
- BHeight = 50;
+ BWidth = 194; // длинна кнопки в основном окне
+ BHeight = 50; // высота кнопки в основном окне
  
 var
 N_Window, check, dif, n, i  : integer;
+b1 := new ButtonABC(10, 10, BWidth * 2 + 70, BHeight * 2, 'Сгенерировать', clWhite);
+b2_1 := new ButtonABC(10, BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Увеличить сложность*', rgb(255, 100, 100));
+b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увеличить Колличество *', rgb(255, 100, 100));
+b2_2 := new ButtonABC(245,BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Уменьшить сложность*', rgb(100, 100, 255));
+b3_2 := new ButtonABC(245, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Уменьшить Колличество *', rgb(100, 100, 255));
 
-{procedure MouseDown(x,y,mb:integer);
+procedure ButtonPosition1();//меняет параметры кнопок под основное окно
 begin
-  if (mb = 1) and (x < x_rigth) and (y < y_down) then check := 1;//если нажали в 1-ый прямоуголник, то нажали 1-ую кнопку
-  if (mb = 1) and ((x < x_rigth) and (y < y_down * 2 + 5)) and ((x > x_left) and (y > y_up )) then check := 2; //если нажали в 2-ый прямоуголник, то нажали 2-ую кнопку
-  if (mb = 1) and ((x < x_rigth) and (y < y_down * 3 + 10)) and ((x > x_left) and (y > y_up * 2 )) then check := 3;//если нажали в 3-ый прямоуголник, то нажали 3-ую кнопку
-  if (mb = 1) and ((x < x_rigth) and (y < y_down * 4 + 15)) and ((x > x_left) and (y > y_up * 3 )) then check := 4;//если нажали в 4-ый прямоуголник, то нажали 4-ую кнопку
-end; }
+    b1.Text := 'Сгенерировать еще'; // меняет параметры  1-ой кнопки под основное окно
+    b1.Height := BHeight;
+    b1.Width := BWidth;   
+    b1.Position := (3,0);
+    
+    b2_1.Height := BHeight;// меняет параметры  2-ой кнопки под основное окно
+    b2_1.Width := BWidth;  
+    b2_1.Position := (BWidth + 10, 0);
+    
+    b3_1.Height := BHeight;// меняет параметры  3-ой кнопки под основное окно
+    b3_1.Width := BWidth;  
+    b3_1.Position := (BWidth * 3 + 20, 0);
+    
+    b2_2.Height := BHeight;// меняет параметры  4-ой кнопки под основное окно
+    b2_2.Width := BWidth;  
+    b2_2.Position := (BWidth * 2 + 15, 0);
+    
+    b3_2.Height := BHeight;// меняет параметры  5-ой кнопки под основное окно
+    b3_2.Width := BWidth;  
+    b3_2.Position := (BWidth * 4 + 25, 0);
+end; //меняет параметры кнопок под основное окно
  
 procedure FirstWindow(); // рисует 1-ое окно
 begin
   SetWindowSize(480, 600); // параметры окна
   SetWindowLeft(ScreenWidth div 2 - 240);
   SetWindowTop(10);
-end; 
+end; // рисует 1-ое окно
   
-procedure MainWindow(); // рисует основное окно, с графом
+procedure GenerateGraph();
+begin
+  
+end;
+
+procedure DrawGraph();
+begin
+   brush.Color := argb(100, 0, 0, 150);
+   pen.Color := clBlack;
+  for var i := 1 to 8 do
+    for var j := 2 to 9 do
+      begin
+       circle(j * 65, i * 65 + 5, 15);
+      end;
+end;
+  
+procedure MainWindow(); // рисует основное окно
 begin
     SetWindowSize(1000, 600); // альфа версия основоного окна
     SetWindowLeft(ScreenWidth div 2 - 500);
@@ -32,63 +69,67 @@ begin
     brush.color := clWhite;
     pen.Color := clWhite; 
     rectangle(0, 55, 1000, 505); 
-    for var i := 1 to 10 do line(0, i * 50 + 5, 1000, i * 50 + 5, argb(60,60,60,60));  
-    for var i := 1 to 20 do line(i * 50 , 55, i * 50, 505, argb(60,60,60,60)); 
-      
-      
-    
-end;
- 
+    for var i := 1 to 7 do line(0, i * 65 + 5, 1000, i * 65 + 5, argb(60,60,60,60));  
+    for var i := 1 to 20 do line(i * 65 , 55, i * 65, 505, argb(60,60,60,60));    
+end; // рисует основное окно
+
+procedure Textout1(); // выводит сложность
+begin
+  brush.Color := clWhite;
+  Font.Size := 15;
+  textout(10, BHeight * 6 + 25, 'Сложность сейчас: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
+  textout(10, BHeight * 6 + 50, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
+end; // выводит сложность
+
+procedure Textout2(); // выводит кол-во генераций
 begin
   
+end; // выводит кол-во генераций
+
+procedure HelpWindow(); // рисует окно помощи
+begin
+  
+end; // рисует окно помощи
+ 
+begin
   N_Window := 1; // переменная, обозначающая какое окно открыто
   dif := 1; // переменная, обозначающа выбранную сложность графа
   n := 1; // переменная, обозначающая колличество генераций
   check := 0; // переменная, обозначающая кокую кнопку нажали
   i := 0;
-  //onmousedown := MouseDown;
   
   FirstWindow();
+  Textout1();
   
-  var b1 := new ButtonABC(10, 10, BWidth * 2 + 60, BHeight * 2, 'Сгенерировать', clWhite);// основная кнопка
-  var b2_1 := new ButtonABC(10,115, BWidth + 25, BHeight * 2, 'Увеличить сложность*', argb(100,255,0,0));//// заготовки под кнопки
-  var b3_1 := new ButtonABC(10, 220, BWidth + 25, BHeight * 2, 'Увеличить Колличество *', argb(100,255,0,0));// заготовки под кнопки
-  var b2_2 := new ButtonABC(245,115, BWidth + 25, BHeight * 2, 'Уменьшить сложность*', argb(100,0,0,255));//// заготовки под кнопки
-  var b3_2 := new ButtonABC(245, 220, BWidth + 25, BHeight * 2, 'Уменьшить Колличество *', argb(100,0,0,255));// заготовки под кнопки
-  b1.OnClick := procedure ->
+  b1.OnClick := procedure -> // нажатие на кнопку сгенерировать перемещает все кнопки
   begin
     mainwindow();
-    b1.Text := 'Сгенерировать еще';
-    b1.Height := BHeight;
-    b1.Width := BWidth - 5;   
-    b1.Position := (3,0);
-    
-    b2_1.Height := BHeight;
-    b2_1.Width := BWidth - 5;  
-    b2_1.Position := (201, 0);
-    
-    b3_1.Height := BHeight;
-    b3_1.Width := BWidth - 5;  
-    b3_1.Position := (597, 0);
-    
-    b2_2.Height := BHeight;
-    b2_2.Width := BWidth - 5;  
-    b2_2.Position := (399, 0);
-    
-    b3_2.Height := BHeight;
-    b3_2.Width := BWidth - 5;  
-    b3_2.Position := (795, 0);
+    DrawGraph();
+    ButtonPosition1();
   end;
   
-  b2_1.OnClick := procedure ->
+  b2_1.OnClick := procedure -> // увеличивает сложность, при нажатии
   begin
-    read(dif);
+    if dif < 5 then dif += 1;
+    Textout1()
   end;
   
-  b3_1.OnClick := procedure ->
+  b3_1.OnClick := procedure ->// уменьшает кол-во генераций, при нажатии
   begin
-    mainwindow();
-    b3_1.Text := 'Сгенерировать еще'
+    if n < 10 then n += 1;
+    Textout1();
+  end;
+  
+   b2_2.OnClick := procedure ->// увеличивает сложность, при нажатии
+  begin
+    if dif > 1 then dif -= 1;
+    Textout1();
+  end;
+  
+  b3_2.OnClick := procedure ->// уменьшает кол-во генераций, при нажатии
+  begin
+    if n > 1 then n -= 1;
+    Textout1();
   end;
   
 end.
