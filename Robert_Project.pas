@@ -4,9 +4,13 @@ uses GraphABC, Events, ABCButtons;
 const
  BWidth = 194; // длинна кнопки в основном окне
  BHeight = 50; // высота кнопки в основном окне
+ Cell_size = 70; // сторона клеток в основном окне
+ r = 25; //радиус вершины
  
 var
-N_Window, check, dif, n, i  : integer;
+N_Window, check, dif, n, i, GraphWidth, GraphHeight  : integer;
+
+
 b1 := new ButtonABC(10, 10, BWidth * 2 + 70, BHeight * 2, 'Сгенерировать', clWhite);
 b2_1 := new ButtonABC(10, BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Увеличить сложность*', rgb(255, 100, 100));
 b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увеличить Колличество *', rgb(255, 100, 100));
@@ -51,26 +55,33 @@ end;
 
 procedure DrawGraph();
 begin
-   brush.Color := argb(100, 0, 0, 150);
-   pen.Color := clBlack;
-  for var i := 1 to 8 do
-    for var j := 2 to 9 do
+  GraphHeight := (2 + dif);
+  GraphWidth := (6 + dif mod 2);
+  for var i := 1 to GraphHeight do
+    for var j := 1 to GraphWidth  do
       begin
-       circle(j * 65, i * 65 + 5, 15);
+       brush.Color := argb(130, 0, 0, 150);
+       pen.Color := clBlack;
+       circle((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + 5, r);
+       brush.Color := argb(0,0,0,0);
+       Font.Color := clWhite;
+       Font.Size := 14;
+       textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 5, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(random(40)));
+       textout((j + (GraphWidth div 2)) * Cell_size , (i + (2 - GraphHeight div 6)) * Cell_size + 5 , 'a');
       end;
 end;
   
 procedure MainWindow(); // рисует основное окно
 begin
-    SetWindowSize(1000, 600); // альфа версия основоного окна
+    SetWindowSize(1000, 800); // альфа версия основоного окна
     SetWindowLeft(ScreenWidth div 2 - 500);
     SetWindowTop(10);    
     setpenwidth(1);
     brush.color := clWhite;
     pen.Color := clWhite; 
-    rectangle(0, 55, 1000, 505); 
-    for var i := 1 to 7 do line(0, i * 65 + 5, 1000, i * 65 + 5, argb(60,60,60,60));  
-    for var i := 1 to 20 do line(i * 65 , 55, i * 65, 505, argb(60,60,60,60));    
+    rectangle(0, 55, 1000, 636); 
+    for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  
+    for var i := 1 to 20 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));    
 end; // рисует основное окно
 
 procedure Textout1(); // выводит сложность
@@ -97,6 +108,8 @@ begin
   n := 1; // переменная, обозначающая колличество генераций
   check := 0; // переменная, обозначающая кокую кнопку нажали
   i := 0;
+  GraphWidth := (6 + dif mod 2); // длинна графа
+  GraphHeight := (2 + dif);// высота графа
   
   FirstWindow();
   Textout1();
