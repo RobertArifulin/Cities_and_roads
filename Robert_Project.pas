@@ -62,7 +62,7 @@ begin
   for var i := 1 to GraphHeight do
     for var j := 1 to GraphWidth  do
       begin
-       brush.Color := argb(130, 0, 0, 150); // отрисовка графа, с именем верщины и ее стоимостью
+       brush.Color := argb(130, 0, 0, 150); // отрисовка графа, с именем вершины и ее стоимостью
        pen.Color := clBlack;
        circle((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + 5, r);
        brush.Color := argb(0,0,0,0);
