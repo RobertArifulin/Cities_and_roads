@@ -6,12 +6,14 @@ const
  BHeight = 50; // высота кнопки в основном окне
  Cell_size = 70; // сторона клеток в основном окне
  r = 25; //радиус вершины
+
+//type
+ //Graph : array of record
  
 var
 N_Window, check, dif, n, i, GraphWidth, GraphHeight  : integer;
 
-
-b1 := new ButtonABC(10, 10, BWidth * 2 + 70, BHeight * 2, 'Сгенерировать', clWhite);
+b1 := new ButtonABC(10, 10, BWidth * 2 + 70, BHeight * 2, 'Сгенерировать', clWhite); //создаем кнопки
 b2_1 := new ButtonABC(10, BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Увеличить сложность*', rgb(255, 100, 100));
 b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увеличить Колличество *', rgb(255, 100, 100));
 b2_2 := new ButtonABC(245,BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Уменьшить сложность*', rgb(100, 100, 255));
@@ -55,12 +57,12 @@ end;
 
 procedure DrawGraph();
 begin
-  GraphHeight := (2 + dif);
+  GraphHeight := (2 + dif); // зависимость высоты и ширины от сложности
   GraphWidth := (6 + dif mod 2);
   for var i := 1 to GraphHeight do
     for var j := 1 to GraphWidth  do
       begin
-       brush.Color := argb(130, 0, 0, 150);
+       brush.Color := argb(130, 0, 0, 150); // отрисовка графа, с именем и стоимостью
        pen.Color := clBlack;
        circle((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + 5, r);
        brush.Color := argb(0,0,0,0);
@@ -73,18 +75,18 @@ end;
   
 procedure MainWindow(); // рисует основное окно
 begin
-    SetWindowSize(1000, 800); // альфа версия основоного окна
+    SetWindowSize(1000, 800); // параметры окна
     SetWindowLeft(ScreenWidth div 2 - 500);
     SetWindowTop(10);    
     setpenwidth(1);
     brush.color := clWhite;
     pen.Color := clWhite; 
-    rectangle(0, 55, 1000, 636); 
-    for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  
+    rectangle(0, 55, 1000, 636); // очищает часть окна
+    for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
     for var i := 1 to 20 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));    
 end; // рисует основное окно
 
-procedure Textout1(); // выводит сложность
+procedure Textout1(); // выводит сложность и кол-во генераций
 begin
   brush.Color := clWhite;
   Font.Size := 15;
@@ -92,9 +94,12 @@ begin
   textout(10, BHeight * 6 + 50, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
 end; // выводит сложность
 
-procedure Textout2(); // выводит кол-во генераций
+procedure Textout2(); // выводит кол-во генераций и кол-во генераций
 begin
-  
+  brush.Color := clWhite;
+  Font.Size := 15;
+  textout(10, BHeight * 6 + 25, 'Сложность сейчас: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
+  textout(10, BHeight * 6 + 50, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
 end; // выводит кол-во генераций
 
 procedure HelpWindow(); // рисует окно помощи
@@ -103,10 +108,10 @@ begin
 end; // рисует окно помощи
  
 begin
-  N_Window := 1; // переменная, обозначающая какое окно открыто
-  dif := 1; // переменная, обозначающа выбранную сложность графа
-  n := 1; // переменная, обозначающая колличество генераций
-  check := 0; // переменная, обозначающая кокую кнопку нажали
+  N_Window := 1; //  какое окно открыто
+  dif := 1; //  выбранную сложность графа
+  n := 1; //  колличество генераций
+  check := 0; // какую кнопку нажали
   i := 0;
   GraphWidth := (6 + dif mod 2); // длинна графа
   GraphHeight := (2 + dif);// высота графа
@@ -116,6 +121,7 @@ begin
   
   b1.OnClick := procedure -> // нажатие на кнопку сгенерировать перемещает все кнопки
   begin
+    N_window := 2;
     mainwindow();
     DrawGraph();
     ButtonPosition1();
@@ -124,7 +130,8 @@ begin
   b2_1.OnClick := procedure -> // увеличивает сложность, при нажатии
   begin
     if dif < 5 then dif += 1;
-    Textout1()
+    if n_window = 1 then Textout1();
+    if n_window = 2 then Textout2();
   end;
   
   b3_1.OnClick := procedure ->// уменьшает кол-во генераций, при нажатии
