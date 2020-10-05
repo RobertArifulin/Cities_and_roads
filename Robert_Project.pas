@@ -7,12 +7,21 @@ const
  Cell_size = 70; // сторона клеток в основном окне
  r = 25; //радиус вершины
 
-//type
- //Graph : array of record
+type
+ ClassVertex = class
+ private
+  _name : string;
+  _val, _x, _y : integer;
+  _ar : array of integer;
+ public
  
-var
-N_Window, check, dif, n, i, GraphWidth, GraphHeight  : integer;
+ end;
+ 
+ 
 
+var
+Graph : array of ClassVertex;
+N_Window, dif, n, GraphWidth, GraphHeight  : integer;
 b1 := new ButtonABC(10, 10, BWidth * 2 + 70, BHeight * 2, 'Сгенерировать', clWhite); //создаем кнопки
 b2_1 := new ButtonABC(10, BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Увеличить сложность*', rgb(255, 100, 100));
 b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увеличить Колличество *', rgb(255, 100, 100));
@@ -52,6 +61,17 @@ end; // рисует 1-ое окно
   
 procedure GenerateGraph();
 begin
+  setlength(Graph, GraphHeight * GraphWidth);
+  for var i := 0 to GraphHeight * GraphWidth - 1  do
+  Graph[i] := ClassVertex.Create;
+  var j := 0;
+  for var i := 1 to GraphHeight * GraphWidth do
+  begin
+    j += 1;
+    Graph[i - 1]._name := inttostr(j) + '-' + inttostr(i);
+    Graph[i - 1]._val := random(1, 40);
+    end;
+    
   
 end;
 
@@ -59,17 +79,27 @@ procedure DrawGraph();
 begin
   GraphHeight := (2 + dif); // зависимость высоты и ширины от сложности
   GraphWidth := (6 + dif mod 2);
+  pen.Color := clBlack;
   for var i := 1 to GraphHeight do
     for var j := 1 to GraphWidth  do
       begin
-       brush.Color := argb(130, 0, 0, 150); // отрисовка графа, с именем вершины и ее стоимостью
-       pen.Color := clBlack;
+       if ((i = 1) and (j = 1)) or ((i = GraphHeight) and (j = GraphWidth)) then
+        brush.Color := argb(130, 0, 170, 0) // отрисовка графа, с именем вершины и ее стоимость       
+       else
+        brush.Color := argb(130, 0, 0, 150); // отрисовка графа, с именем вершины и ее стоимостью
+      
        circle((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + 5, r);
+       pen.Color := clBlack;
+       if j <> GraphWidth then
+        line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 5,((j + 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 5 );
+       if i <> GraphHeight then
+        line((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );
+       
        brush.Color := argb(0,0,0,0);
        Font.Color := clWhite;
        Font.Size := 14;
-       textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 5, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(random(40)));
-       textout((j + (GraphWidth div 2)) * Cell_size , (i + (2 - GraphHeight div 6)) * Cell_size + 5 , 'a');
+       textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 3, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i * j - 1]._val));
+       textout((j + (GraphWidth div 2)) * Cell_size - 15, (i + (2 - GraphHeight div 6)) * Cell_size + 5 , Graph[j * i - 1]._name);
       end;
 end;
   
@@ -98,8 +128,8 @@ procedure Textout2(); // выводит кол-во генераций и кол
 begin
   brush.Color := clWhite;
   Font.Size := 15;
-  textout(10, BHeight * 6 + 25, 'Сложность сейчас: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
-  textout(10, BHeight * 6 + 50, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
+  textout(10, BHeight * 12 + 40, 'Сложность сейчас: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
+  textout(10, BHeight * 12 + 65, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
 end; // выводит кол-во генераций
 
 procedure HelpWindow(); // рисует окно помощи
@@ -111,10 +141,11 @@ begin
   N_Window := 1; //  какое окно открыто
   dif := 1; //  выбранную сложность графа
   n := 1; //  колличество генераций
-  check := 0; // какую кнопку нажали
-  i := 0;
   GraphWidth := (6 + dif mod 2); // длинна графа
   GraphHeight := (2 + dif);// высота графа
+  
+ // Graph := ClassVertex.Create;
+
   
   FirstWindow();
   Textout1();
@@ -123,6 +154,7 @@ begin
   begin
     N_window := 2;
     mainwindow();
+    GenerateGraph();
     DrawGraph();
     ButtonPosition1();
   end;
@@ -130,6 +162,8 @@ begin
   b2_1.OnClick := procedure -> // увеличивает сложность, при нажатии
   begin
     if dif < 5 then dif += 1;
+    GraphWidth := (6 + dif mod 2); // длинна графа
+    GraphHeight := (2 + dif);// высота графа
     if n_window = 1 then Textout1();
     if n_window = 2 then Textout2();
   end;
@@ -137,19 +171,24 @@ begin
   b3_1.OnClick := procedure ->// уменьшает кол-во генераций, при нажатии
   begin
     if n < 10 then n += 1;
-    Textout1();
+    if n_window = 1 then Textout1();
+    if n_window = 2 then Textout2();
   end;
   
    b2_2.OnClick := procedure ->// увеличивает сложность, при нажатии
   begin
     if dif > 1 then dif -= 1;
-    Textout1();
+    GraphWidth := (6 + dif mod 2); // длинна графа
+    GraphHeight := (2 + dif);// высота графа
+    if n_window = 1 then Textout1();
+    if n_window = 2 then Textout2();
   end;
   
   b3_2.OnClick := procedure ->// уменьшает кол-во генераций, при нажатии
   begin
     if n > 1 then n -= 1;
-    Textout1();
+    if n_window = 1 then Textout1();
+    if n_window = 2 then Textout2();
   end;
-  
+
 end.
