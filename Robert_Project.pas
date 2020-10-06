@@ -13,27 +13,17 @@ type
  public
  _name : string;
   _val, _MinWayVal : integer;
-  //_ar : array of ClassVertex;
  end;
  
- //link = ^ClassVertex;
- 
-{ link = ^S;
- S = Record
-  ar : integer;
-  Next : link;
-End;}
- 
-
 var
 Graph : array of array of ClassVertex;
 Way : array of string;
 N_Window, dif, n, GraphWidth, GraphHeight  : integer;
 b1 := new ButtonABC(10, 10, BWidth * 2 + 70, BHeight * 2, 'Сгенерировать', clWhite); //создаем кнопки
-b2_1 := new ButtonABC(10, BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Увеличить сложность*', rgb(255, 100, 100));
-b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увеличить Колличество *', rgb(255, 100, 100));
-b2_2 := new ButtonABC(245,BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Уменьшить сложность*', rgb(100, 100, 255));
-b3_2 := new ButtonABC(245, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Уменьшить Колличество *', rgb(100, 100, 255));
+b2_1 := new ButtonABC(10, BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Увеличить сложность', rgb(255, 100, 100));
+b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увеличить Колличество', rgb(255, 100, 100));
+b2_2 := new ButtonABC(245,BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Уменьшить сложность', rgb(100, 100, 255));
+b3_2 := new ButtonABC(245, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Уменьшить Колличество', rgb(100, 100, 255));
 
 procedure ButtonPosition1();//меняет параметры кнопок под основное окно
 begin
@@ -66,46 +56,26 @@ begin
   SetWindowTop(10);
 end; // рисует 1-ое окно
   
-procedure GenerateGraph();
+procedure GenerateGraph(); // генерирует граф, с рандомными стоимостями
 begin
-  setlength(Graph, GraphHeight);
+  setlength(Graph, GraphHeight); // Задает длинны Graph (2-х мерного массива вершин), в соответствии с шириной и высотой графа
   for var i := 0 to GraphHeight - 1 do
     setlength(Graph[i], GraphWidth);
     
-  for var i := 0 to GraphHeight - 1 do
+  for var i := 0 to GraphHeight - 1 do // каждой вершине...
     for var j := 0 to GraphWidth - 1  do
       begin
-        Graph[i][j] := ClassVertex.Create;
-        Graph[i][j]._name := inttostr(j + 1) + '-' + inttostr(i + 1);
-        Graph[i][j]._val := random(1, 40);
+        Graph[i][j] := ClassVertex.Create;// создаеться класс вершина
+        Graph[i][j]._name := inttostr(j + 1) + '-' + inttostr(i + 1); // присваивается имя ( = координате)
+        Graph[i][j]._val := random(1, 40); // присваивается стоимость проезда
         if ((i = 0) and (j = 0))  then
-        Graph[i][j]._MinWayVal := 0
+        Graph[i][j]._MinWayVal := 0 // присваивается мин. стоимость проезда от начала (в начальной вершине, очевидно всегда = 0)
         else
-        Graph[i][j]._MinWayVal := 10000;
-       { if i > 0 then
-        begin
-          setlength(Graph[i][j]._ar, Length(Graph[i][j]._ar) + 1);
-          Graph[i][j]._ar[length(Graph[i][j]._ar) - 1] := Graph[i - 1][j];
-        end;
-        if j > 0 then
-        begin
-          setlength(Graph[i][j]._ar, Length(Graph[i][j]._ar) + 1);
-          Graph[i][j]._ar[length(Graph[i][j]._ar) - 1] := Graph[i][j - 1];
-        end;
-        if i < GraphHeight - 1 then
-        begin
-          setlength(Graph[i][j]._ar, Length(Graph[i][j]._ar) + 1);
-          Graph[i][j]._ar[length(Graph[i][j]._ar) - 1] := Graph[i + 1][j];
-        end;
-        if j < GraphWidth - 1 then
-        begin
-          setlength(Graph[i][j]._ar, Length(Graph[i][j]._ar) + 1);
-          Graph[i][j]._ar[length(Graph[i][j]._ar) - 1] := Graph[i][j + 1];
-        end;}
+        Graph[i][j]._MinWayVal := 10000;// присваивается мин. стоимость проезда от начала 
     end;
-end;
+end;  // генерирует граф, с рандомными стоимостями
 
-procedure DrawGraph();
+procedure DrawGraph(); // рисует граф, подписывает вершины
 begin
   GraphHeight := (2 + dif); // зависимость высоты и ширины от сложности
   GraphWidth := (6 + dif mod 2);
@@ -121,19 +91,24 @@ begin
        circle((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + 5, r);
        pen.Color := clBlack;
        if j <> GraphWidth then
+       begin
+        line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 6,((j + 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 6);
         line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 5,((j + 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 5 );
+       end;
        if i <> GraphHeight then
+       begin
+        line((j + (GraphWidth div 2)) * Cell_size + 1, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 1, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );
         line((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );
-       
+       end;
        brush.Color := argb(0,0,0,0);
        Font.Color := clBlack;
        Font.Size := 14;
        
-       textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 10, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i - 1][j - 1]._val) + '-');
-       textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 15, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i - 1][j - 1]._MinWayVal));
+       textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 3, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i - 1][j - 1]._val) );
+       //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 15, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i - 1][j - 1]._MinWayVal));
        textout((j + (GraphWidth div 2)) * Cell_size - 15, (i + (2 - GraphHeight div 6)) * Cell_size + 5 , Graph[i - 1][j - 1]._name);
       end;
-end;
+end;// рисует граф, подписывает вершины
 
 procedure RightWay();
 begin
@@ -147,10 +122,6 @@ begin
       for var i := 0 to GraphHeight - 1 do
         for var j := 0 to GraphWidth - 1 do
         begin
-          //for var t := 0 to length(Graph[i][j]._ar) - 1 do
-          //begin
-            //writeln(Graph[i][j]._ar[t]);
-            //sleep(10000);
             if i > 0 then
             begin
               if Graph[i][j]._MinWayVal > Graph[i][j]._Val + Graph[i - 1][j]._MinWayVal then   
@@ -183,12 +154,6 @@ begin
                 flag := true;
               end;
             end;
-            {if Graph[i][j]._MinWayVal > Graph[i][j]._Val + Graph[i][j]._ar[t]._MinWayVal then   
-            begin
-              Graph[i][j]._MinWayVal := Graph[i][j]._Val + Graph[i][j]._ar[t]._MinWayVal;
-              flag := true;}
-            //end;
-          //end;
        end;
     end;
   end;
@@ -196,26 +161,32 @@ end;
 
 procedure SetWay();
 var
-x, y, min: integer;
+x, y, prev_x, prev_y, min: integer;
 begin
+ for var i := 0 to length(way) - 1 do // очищаем массив пути
+   way[i] := '';
+ setlength(way, 0);
+ 
+ prev_x := GraphWidth - 1;
+ prev_y := GraphHeight - 1;
  x := GraphWidth - 1;
  y := GraphHeight - 1;
  min := 10000;
  setlength(way, length(way) + 1);
  way[0] := Graph[GraphHeight - 1][GraphWidth - 1]._name;
- while (y <> 0) and (x <> 0) do
+ while (y <> 0) or (x <> 0) do
   begin
     if y > 0 then
     begin
-      if Graph[y - 1][x]._MinWayVal < min then   
+      if (Graph[y - 1][x]._MinWayVal < min) and ((y - 1 <> prev_y) or (x <> prev_x))then   
       begin
-        min := Graph[y - 1][x]._MinWayVal;
+        min := Graph[y - 1][x]._MinWayVal; // min 
         Graph[y][x]._MinWayVal := Graph[y][x]._Val + Graph[y - 1][x]._MinWayVal;
       end;
     end;
     if x > 0 then
     begin
-      if Graph[y][x - 1]._MinWayVal < min then   
+      if (Graph[y][x - 1]._MinWayVal < min) and ((y <> prev_y) or (x - 1 <> prev_x)) then   
       begin
         min := Graph[y][x - 1]._MinWayVal;
         Graph[y][x]._MinWayVal := Graph[y][x]._Val + Graph[y][x - 1]._MinWayVal;
@@ -223,7 +194,7 @@ begin
     end;
     if y < GraphHeight - 1 then
      begin
-      if Graph[y + 1][x]._MinWayVal < min then   
+      if (Graph[y + 1][x]._MinWayVal < min) and ((y + 1 <> prev_y) or (x <> prev_x)) then   
       begin
         min := Graph[y + 1][x]._MinWayVal;
         Graph[y + 1][x]._MinWayVal := Graph[y][x]._Val + Graph[y + 1][x]._MinWayVal;
@@ -231,7 +202,7 @@ begin
     end;
     if x < GraphWidth - 1 then
     begin
-      if Graph[y][x + 1]._MinWayVal < min then   
+      if (Graph[y][x + 1]._MinWayVal < min) and ((y <> prev_y) or (x + 1 <> prev_x)) then   
       begin
         min := Graph[y][x + 1]._MinWayVal;
         Graph[y][x + 1]._MinWayVal := Graph[y][x]._Val + Graph[y][x + 1]._MinWayVal;
@@ -241,8 +212,10 @@ begin
     for var i := GraphHeight - 1 downto 0 do
       for var j := GraphWidth - 1 downto 0  do
       begin
-        if (Graph[i][j]._MinWayVal = min) and ((((i = y + 1) or (i = y - 1)) and (j = x)) or (((j = x + 1) or (j = x - 1)) and (i = y))) then
+        if (Graph[i][j]._MinWayVal = min) and ((((i = y + 1) or (i = y - 1)) and (j = x)) or (((j = x + 1) or (j = x - 1)) and (i = y))) and ((i <> prev_y) or (j <> prev_x)) then
         begin
+          prev_x := x;
+          prev_y := y;
           x := j;
           y := i;
           setlength(way, length(way) + 1);
@@ -262,7 +235,7 @@ begin
     setpenwidth(1);
     brush.color := clWhite;
     pen.Color := clWhite; 
-    rectangle(0, 55, 1000, 636); // очищает часть окна
+    rectangle(0, 55, 1000, 800); // очищает часть окна
     for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
     for var i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));    
 end; // рисует основное окно
@@ -275,21 +248,34 @@ begin
   textout(10, BHeight * 6 + 50, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
 end; // выводит сложность
 
-procedure Textout2(); // выводит кол-во генераций и кол-во генераций
+procedure Textout2(); // выводит кол-во генераций, сложность и путь
 begin
-  brush.Color := clWhite;
   Font.Size := 15;
+  Font.Color := clBlack;
+  brush.color := clWhite;
   textout(10, BHeight * 12 + 40, 'Сложность сейчас: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
   textout(10, BHeight * 12 + 65, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    ');
-  textout(10, BHeight * 13 + 65, 'Путь: ');  
-  for var i := length(way) - 1 downto 0 do
-  textout(70 + 50 * (length(way) - 1 - i), BHeight * 13 + 65, way[i]);  
-end; // выводит кол-во генераций
+end; // выводит кол-во генераций, сложность и путь
 
+procedure WriteWay();
+begin
+  brush.color := clWhite;
+  pen.Color := clWhite; 
+  rectangle(0, 715, 1000, 800); // очищает часть окнo
+  textout(10, BHeight * 13 + 65, 'Путь: ');  
+  pen.Color := clBlack; 
+  Font.Color := clRed;
+  for var i := 1 to length(way) - 1 do
+  begin
+    textout(20 + 50 * i, BHeight * 13 + 65, way[length(way) - 1 - i]); 
+  end; 
+  Font.Color := clBlack;
+ end;
+ 
 procedure HelpWindow(); // рисует окно помощи
 begin
   
-end; // рисует окно помощи
+end; // рисует окно помощи 
  
 begin
   N_Window := 1; //  какое окно открыто
@@ -311,6 +297,7 @@ begin
     RightWay();
     SetWay();
     DrawGraph();
+    WriteWay();
     ButtonPosition1();
     Textout2();
   end;
