@@ -7,13 +7,15 @@ const
  Cell_size = 70; // сторона клеток в основном окне
  r = 25; //радиус вершины
 
+
 type
  ClassVertex = class // класс вершиина
  private
  public
- _name : string;
+  _name : string;
   _val, _MinWayVal : integer;
  end;
+ 
  
 var
 Graph : array of array of ClassVertex; // граф - массив вершин
@@ -24,6 +26,7 @@ b2_1 := new ButtonABC(10, BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Увел�
 b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увеличить Колличество', rgb(255, 100, 100));
 b2_2 := new ButtonABC(245,BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Уменьшить сложность', rgb(100, 100, 255));
 b3_2 := new ButtonABC(245, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Уменьшить Колличество', rgb(100, 100, 255));
+
 
 procedure ButtonPosition1();//меняет параметры кнопок под основное окно
 begin
@@ -48,6 +51,7 @@ begin
     b3_2.Width := BWidth;  
     b3_2.Position := (BWidth * 4 + 25, 0);
 end; //меняет параметры кнопок под основное окно
+
  
 procedure FirstWindow(); // рисует 1-ое окно
 begin
@@ -55,9 +59,11 @@ begin
   SetWindowLeft(ScreenWidth div 2 - 240);
   SetWindowTop(10);
 end; // рисует 1-ое окно
-  
+ 
+ 
 procedure GenerateGraph(); // генерирует граф, с рандомными стоимостями
 begin
+  
   setlength(Graph, GraphHeight); // Задает длинны Graph (2-х мерного массива вершин), в соответствии с шириной и высотой графа
   for var i := 0 to GraphHeight - 1 do
     setlength(Graph[i], GraphWidth);
@@ -67,14 +73,20 @@ begin
       begin
         Graph[i][j] := ClassVertex.Create;// создаеться класс вершина
         Graph[i][j]._name := inttostr(j + 1) + '-' + inttostr(i + 1); // присваивается имя ( = координате)
-        Graph[i][j]._val := random(1, 40); // присваивается стоимость проезда
-        if ((i = 0) and (j = 0))  then
-        Graph[i][j]._MinWayVal := 0 // присваивается мин. стоимость проезда от начала (в начальной вершине, очевидно всегда = 0)
+        if (i = 0) and (j = 0)  then
+        begin
+          Graph[i][j]._val := 0;
+          Graph[i][j]._MinWayVal := 0; ;// присваивается мин. стоимость проезда от начала (в начальной вершине, очевидно всегда = 0)
+        end
         else
-        Graph[i][j]._MinWayVal := 10000;// присваивается мин. стоимость проезда от начала 
+        begin
+          Graph[i][j]._MinWayVal := 10000;// присваивается мин. стоимость проезда от начала 
+          Graph[i][j]._val := random(1, 40); // присваивается стоимость проезда
+        end;
     end;
     
 end;  // генерирует граф, с рандомными стоимостями
+
 
 procedure DrawGraph(); // рисует граф, подписывает вершины
 begin
@@ -89,10 +101,11 @@ begin
   for var i := 1 to GraphHeight do // перебираем все координаты вершин
     for var j := 1 to GraphWidth  do
       begin
-       if ((i = 1) and (j = 1)) or ((i = GraphHeight) and (j = GraphWidth)) then
-        brush.Color := argb(130, 0, 170, 0) // выделяет цветом начало и конец  
-       else
-        brush.Color := argb(130, 0, 0, 150); // цвет неособой верщины
+        
+        if ((i = 1) and (j = 1)) or ((i = GraphHeight) and (j = GraphWidth)) then
+          brush.Color := argb(130, 0, 170, 0) // выделяет цветом начало и конец  
+        else
+          brush.Color := argb(130, 0, 0, 150); // цвет неособой верщины
       
        circle((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + 5, r);// рисуем окружность - вершину
        pen.Color := clBlack;// задаем цвет ребра
@@ -108,29 +121,32 @@ begin
         line((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );// толщиной 2 пикселя
        end;
        
-      // end;
        brush.Color := argb(0,0,0,0); // настраеваем шрифт подписи вершины
        Font.Color := clBlack;
        Font.Size := 14;
        
-       if Graph[i - 1][j - 1]._val div 10 = 0 then 
+       if (Graph[i - 1][j - 1]._val div 10 = 0) and ((j <> 1) or (i <> 1)) then 
          textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 7, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , inttostr(Graph[i - 1][j - 1]._val) )// записыаем 2-х значное число
-       else 
+       else if (j <> 1) or (i <> 1) then
          textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 2, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , inttostr(Graph[i - 1][j - 1]._val) );// записыаем 1 значное число
+       if (i = 1) and (j = 1) then
+         textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 7, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , 'Start');
+
          
        //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 15, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i - 1][j - 1]._MinWayVal)); // вывод параметра, для проверки на корректность работы алгоритма
-         brush.Color := argb(0,0,0,0);// настраиваем шрифт подписи координат
-         Font.Color := clBlack;
-         Font.Size := 24;
-         textout((GraphWidth div 2) * Cell_size - 9, (i + (2 - GraphHeight div 6)) * Cell_size - 13, i); // y координаты
-         textout((j + (GraphWidth div 2)) * Cell_size - 9, ((2 - GraphHeight div 6)) * Cell_size - 13, j); // x координаты
-         textout((GraphWidth div 2) * Cell_size - 9, (2 - GraphHeight div 6) * Cell_size - 13, 0); // 0
+       brush.Color := argb(0,0,0,0);// настраиваем шрифт подписи координат
+       Font.Color := clBlack;
+       Font.Size := 24;
+       textout((GraphWidth div 2) * Cell_size - 9, (i + (2 - GraphHeight div 6)) * Cell_size - 13, i); // y координаты
+       textout((j + (GraphWidth div 2)) * Cell_size - 9, ((2 - GraphHeight div 6)) * Cell_size - 13, j); // x координаты
+       textout((GraphWidth div 2) * Cell_size - 9, (2 - GraphHeight div 6) * Cell_size - 13, 0); // 0
          
          brush.Color := argb(0,0,0,0); // возвращаем шрифт как был
          Font.Color := clBlack;
          Font.Size := 14;
       end;
 end; // рисует граф, подписывает вершины
+
 
 procedure ValWay(); // алгоритм Дейкстры
 begin
@@ -181,6 +197,7 @@ begin
     end;
   end;
 end; // алгорит Дейкстры
+
 
 procedure SetWay(); // запись кратчайшего пути
 var
@@ -252,7 +269,8 @@ begin
       end;
   end;
 end; // запись кратчайшего пути
-    
+ 
+ 
 procedure Textout1(); // выводит сложность и кол-во генераций в начадьном окне
 begin
   brush.Color := clWhite;
@@ -260,6 +278,7 @@ begin
   textout(10, BHeight * 6 + 25, 'Сложность сейчас: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
   textout(10, BHeight * 6 + 50, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
 end; // выводит сложность и кол-во генераций в начальном окне
+
 
 procedure Textout2(); // выводит кол-во генераций, сложность и путь в основном окне
 begin
@@ -270,26 +289,30 @@ begin
   textout(10, BHeight * 13 + 35, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    ');
 end; // выводит кол-во генераций, сложность и путь в основном окне
 
+
 procedure WriteWay(); // вывод пути в основном окне
 begin
   brush.color := clWhite;
   pen.Color := clWhite; 
   rectangle(0, 750, 1000, 800); // очищает часть окнo
   textout(10, BHeight * 15, 'Путь: ');  
+  textout(70 + 40 * length(way), BHeight * 15,'Стоимость проезда: ');  
   pen.Color := clBlack; 
   Font.Color := clRed;
   for var i := 0 to length(way) - 1 do
   begin
-    textout(70 + 50 * i, BHeight * 15, way[length(way) - 1 - i]); 
+    textout(70 + 40 * i, BHeight * 15, way[length(way) - 1 - i]); 
   end; 
-    textout(70 + 50 * length(way), BHeight * 15, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._MinWayVal); 
+    textout(260 + 40 * length(way), BHeight * 15, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._MinWayVal); 
   Font.Color := clBlack;
  end; // вывод пути в основном окне
+ 
  
 procedure HelpWindow(); // рисует окно помощи (не сделано)
 begin
   
 end; // рисует окно помощи (не сделано)
+
 
 procedure MainWindow(); // рисует основное окно
 begin
@@ -305,6 +328,7 @@ begin
     for var i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60)); 
     
 end; // рисует основное окно
+
 
 begin
   N_Window := 1; //  какое окно открыто
