@@ -20,7 +20,10 @@ type
 var
 Graph : array of array of ClassVertex; // граф - массив вершин
 Way : array of string; // путь
-N_Window, dif, n, GraphWidth, GraphHeight, Prev_N_Window  : integer;
+N_Window, dif, n, GraphWidth, GraphHeight, Prev_N_Window, FileName : integer;
+p : Picture := new Picture(1000, 580);
+f : text := new Text ;
+
 b1 := new ButtonABC(10, 10, BWidth * 2 + 70, BHeight * 2, 'Сгенерировать', clWhite); //создаем кнопки
 b2_1 := new ButtonABC(10, BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Увеличить сложность', rgb(255, 100, 100));
 b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увеличить Колличество', rgb(255, 100, 100));
@@ -325,12 +328,103 @@ begin
     rectangle(0, 55, 1000, 800); // очищает часть окна
     line(0, 730, 1000, 730, rgb(0, 0, 0));
     for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
-    for var i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60)); 
-    
+    for var i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));  
 end; // рисует основное окно
 
 
+procedure WayFile(); // сохроняет путь в файле
 begin
+  assign(f, 'путь - ' + inttostr(FileName) + '.txt');
+  Rewrite(f);
+  write(f, 'Путь: ');
+  for var i := 0 to length(way) - 1 do
+  begin
+    Write(f, way[length(way) - 1 - i] + '  ');
+  end;
+  write(f, 'Стоимость: ');
+  write(f, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._MinWayVal);
+  close(f);
+end; // сохроняет путь в файле
+ 
+
+procedure DrawGraphFile(); // сохроняет граф в файле
+begin
+   for var i := 1 to 9 do p.line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
+   for var i := 1 to 14 do p.line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));
+  
+  GraphHeight := (2 + dif); // зависимость высоты и ширины от сложности
+  GraphWidth := (6 + dif mod 2);
+  
+  Font.Size := 12; // настройки шрифта
+  Font.Color := rgb(130, 130, 130);
+  p.textout(5, Cell_Size + 15, 'Сложность графа: ' + inttostr(dif));// выводим сложность графа, уже сгенерированного
+  pen.Color := clBlack;
+  
+  for var i := 1 to GraphHeight do // перебираем все координаты вершин
+    for var j := 1 to GraphWidth  do
+      begin
+        
+        if ((i = 1) and (j = 1)) or ((i = GraphHeight) and (j = GraphWidth)) then
+          brush.Color := rgb( 190, 190, 190) // выделяет цветом начало и конец  
+        else
+          brush.Color := rgb(255, 255, 255); // цвет неособой верщины
+      
+       p.circle((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + 5, r);// рисуем окружность - вершину
+       pen.Color := clBlack;// задаем цвет ребра
+       
+       if j <> GraphWidth then
+       begin
+        p.line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 6,((j + 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 6); // рисуем горизонтальные ребра
+        p.line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 5,((j + 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 5 ); // толщиной 2 пикселя
+       end;
+       if i <> GraphHeight then
+       begin
+        p.line((j + (GraphWidth div 2)) * Cell_size + 1, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 1, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );// рисуем вертикальные ребра
+        p.line((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );// толщиной 2 пикселя
+       end;
+       
+       brush.Color := argb(0,0,0,0); // настраеваем шрифт подписи вершины
+       Font.Color := clBlack;
+       Font.Size := 14;
+       
+       if (Graph[i - 1][j - 1]._val div 10 = 0) and ((j <> 1) or (i <> 1)) then 
+         p.textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 7, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , inttostr(Graph[i - 1][j - 1]._val) )// записыаем 2-х значное число
+       else if (j <> 1) or (i <> 1) then
+         p.textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 2, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , inttostr(Graph[i - 1][j - 1]._val) );// записыаем 1 значное число
+       if (i = 1) and (j = 1) then
+         p.textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 7, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , 'Start');
+
+         
+       //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 15, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i - 1][j - 1]._MinWayVal)); // вывод параметра, для проверки на корректность работы алгоритма
+       brush.Color := argb(0,0,0,0);// настраиваем шрифт подписи координат
+       Font.Color := clBlack;
+       Font.Size := 24;
+       p.textout((GraphWidth div 2) * Cell_size - 9, (i + (2 - GraphHeight div 6)) * Cell_size - 13, inttostr(i)); // y координаты
+       p.textout((j + (GraphWidth div 2)) * Cell_size - 9, ((2 - GraphHeight div 6)) * Cell_size - 13, inttostr(j)); // x координаты
+       p.textout((GraphWidth div 2) * Cell_size - 9, (2 - GraphHeight div 6) * Cell_size - 13, '0'); // 0
+         
+         brush.Color := argb(0,0,0,0); // возвращаем шрифт как был
+         Font.Color := clBlack;
+         Font.Size := 14;  
+      end;
+end;  // сохроняет граф в файле
+ 
+ 
+procedure NextNameFile(); // определяет название следующего файла
+var
+i : integer;
+begin
+  i := 1;
+  while FileExists('путь - ' + inttostr(i) + '.txt') do
+  begin
+    i += 1;
+  end; 
+  FileName := i;
+end; // определяет название следующего файла
+ 
+ 
+begin
+  
   N_Window := 1; //  какое окно открыто
   dif := 1; //  выбранную сложность графа
   n := 1; //  колличество генераций
@@ -353,7 +447,13 @@ begin
     WriteWay();
     ButtonPosition1();
     Textout2();
+    
+    NextNameFile();
+    DrawGraphFile();
+    p.Save('Граф - ' + inttostr(FileName) + '.png');
+    WayFile();
   end;
+  
   
   b2_1.OnClick := procedure -> // увеличивает сложность, при нажатии
   begin
@@ -364,12 +464,14 @@ begin
     if n_window = 2 then Textout2();
   end;
   
+  
   b3_1.OnClick := procedure ->// уменьшает кол-во генераций, при нажатии
   begin
     if n < 10 then n += 1;
     if n_window = 1 then Textout1();
     if n_window = 2 then Textout2();
   end;
+  
   
    b2_2.OnClick := procedure ->// увеличивает сложность, при нажатии
   begin
@@ -379,6 +481,7 @@ begin
     if n_window = 1 then Textout1();
     if n_window = 2 then Textout2();
   end;
+  
   
   b3_2.OnClick := procedure ->// уменьшает кол-во генераций, при нажатии
   begin
