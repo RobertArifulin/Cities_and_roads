@@ -1,4 +1,4 @@
-﻿unit Generate;
+﻿unit Generate;// генерирует граф 
 interface
 
 uses Describe;

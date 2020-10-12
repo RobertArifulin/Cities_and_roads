@@ -1,4 +1,4 @@
-﻿program Project_Robert;
+﻿program Project_Robert; //основная программа
 
 uses GraphABC, ABCButtons, Draw, Describe, Button, SaveGraph;
  

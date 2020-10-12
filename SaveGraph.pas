@@ -1,4 +1,4 @@
-﻿unit SaveGraph;
+﻿unit SaveGraph;// сохраняет граф 
 interface
 uses Describe, GraphABC, Generate;
 

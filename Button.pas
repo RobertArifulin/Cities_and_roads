@@ -1,4 +1,4 @@
-﻿unit Button;
+﻿unit Button; // работает с кнопками
 interface
 uses GraphABC, ABCButtons, Describe, Draw, Generate, SaveGraph;
 
