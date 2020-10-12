@@ -1,4 +1,4 @@
-﻿unit Button;
+﻿unit Button; // отвечает за рабуту с кнопками
 interface
 uses GraphABC, ABCButtons, Describe, Draw, Generate, SaveGraph;
 
@@ -20,21 +20,21 @@ procedure ButtonPosition1;
 implementation
 
 
-  procedure b1_OnClick;
+  procedure b1_OnClick; //кнопка сгенерировать
   begin
-    N_window := 2;
+    N_window := 2; // перерисовывает окно
     mainwindow();
     
-    GenerateGraph();
+    GenerateGraph();// генерация самого графа
     ValWay();
     SetWay();
-    DrawGraph();
     
+    DrawGraph();// его отрисовка
     WriteWay();
     ButtonPosition1();
     Textout2();
     
-    NextNameFile();
+    NextNameFile();// сохранине графа
     DrawGraphFile();
     WayFile();
   end;
