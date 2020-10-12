@@ -1,4 +1,4 @@
-﻿unit Generate;// генерирует граф, находит путь
+﻿unit Generate;
 interface
 
 uses Describe;
