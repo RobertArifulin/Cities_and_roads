@@ -3,9 +3,11 @@
 uses GraphABC, ABCButtons, Draw, Describe, Button, SaveGraph;
  
 begin
+  b5.Visible := False;
   FileName := 1;
   FileSession := 1;
   N_Window := 1; //  какое окно открыто
+  Prev_N_Window := 1;
   dif := 1; //  выбранную сложность графа
   n := 1; //  колличество генераций
   GraphWidth := (6 + dif mod 2); // длинна графа
@@ -43,4 +45,15 @@ begin
     b3_2_OnClick();
   end;
 
+
+  b4.OnClick := procedure ->
+  begin
+    b4_OnClick();
+  end;
+  
+  b5.OnClick := procedure ->
+  begin
+    b5_OnClick();
+  end;
+  
 end.

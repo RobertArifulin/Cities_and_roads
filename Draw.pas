@@ -9,23 +9,23 @@ procedure Textout1;
 procedure Textout2;
 procedure DrawGraph;
 procedure WriteWay;
-procedure HelpWindow; // рисует окно помощи (не сделано)
+procedure HelpWindow; // рисует окно помощи 
 
 implementation
 
 
 procedure MainWindow;
 begin
-    SetWindowSize(1000, 800); // параметры окна
-    SetWindowLeft(ScreenWidth div 2 - 500);
-    SetWindowTop(10);    
-    setpenwidth(1);
-    brush.color := clWhite;
-    pen.Color := clWhite; 
-    rectangle(0, 55, 1000, 800); // очищает часть окна
-    line(0, 730, 1000, 730, rgb(0, 0, 0));
-    for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
-    for var i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));  
+  SetWindowSize(1000, 800); // параметры окна
+  SetWindowLeft(ScreenWidth div 2 - 500);
+  SetWindowTop(10);
+  setpenwidth(1);
+  brush.color := clWhite;
+  pen.Color := clWhite; 
+  rectangle(0, 55, 1000, 800); // очищает часть окна
+  line(0, 730, 1000, 730, rgb(0, 0, 0));
+  for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
+  for var i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));  
 end;
 
 
@@ -37,12 +37,22 @@ begin
 end; // рисует 1-ое окно
 
 
+procedure HelpWindow(); // рисует окно помощи (не сделано)
+begin
+  Window.Clear();
+  SetWindowSize(1000, 800); // параметры окна
+  SetWindowLeft(ScreenWidth div 2 - 500);
+  SetWindowTop(10);
+  textout(100,100,'Помощь');
+end; // рисует окно помощи 
+
+
 procedure Textout1(); // выводит сложность и кол-во генераций в начадьном окне
 begin
   brush.Color := clWhite;
   Font.Size := 15;
   textout(10, BHeight * 6 + 25, 'Сложность сейчас: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
-  textout(10, BHeight * 6 + 50, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
+  textout(10, BHeight * 7, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
 end; // выводит сложность и кол-во генераций в начальном окне
 
 
@@ -134,10 +144,6 @@ begin
  end; // вывод пути в основном окне
 
 
-procedure HelpWindow(); // рисует окно помощи (не сделано)
-begin
-  
-end; // рисует окно помощи (не сделано)
 
 
 
