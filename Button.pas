@@ -46,7 +46,7 @@ implementation
   begin
     if N_Window <> 3 then 
     begin
-      b5.Visible := True;
+      b5.Visible := False;
       if N_Window <> 2 then
       Prev_N_Window := N_Window;
       N_window := 2;
@@ -60,6 +60,7 @@ implementation
       WriteWay();
       Textout2();
       ButtonPosition2();
+      b4.Visible := True;
      
       
       NextNameFile();
