@@ -19,6 +19,7 @@ begin
   b1.OnClick := procedure -> // нажатие на кнопку сгенерировать перемещает все кнопки
   begin
     b1_OnClick();
+    b4.Visible := True;
   end;
   
   
@@ -54,6 +55,7 @@ begin
   b5.OnClick := procedure ->
   begin
     b5_OnClick();
+    b4.Visible := True;
   end;
   
 end.

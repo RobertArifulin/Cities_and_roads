@@ -116,8 +116,7 @@ begin
        Font.Color := clBlack;
        Font.Size := 24;
        textout((GraphWidth div 2) * Cell_size - 9, (i + (2 - GraphHeight div 6)) * Cell_size - 13, i); // y координаты
-       textout((j + (GraphWidth div 2)) * Cell_size - 9, ((2 - GraphHeight div 6)) * Cell_size - 13, j); // x координаты
-       textout((GraphWidth div 2) * Cell_size - 9, (2 - GraphHeight div 6) * Cell_size - 13, 0); // 0
+       textout((j + (GraphWidth div 2)) * Cell_size - 9, ((2 - GraphHeight div 6)) * Cell_size - 13, chr(96 + j)); // x координаты
          
          brush.Color := argb(0,0,0,0); // возвращаем шрифт как был
          Font.Color := clBlack;
@@ -131,7 +130,7 @@ begin
   brush.color := clWhite;
   pen.Color := clWhite; 
   rectangle(0, 750, 1000, 800); // очищает часть окнo
-  textout(10, BHeight * 15, 'Путь: ');  
+  textout(5, BHeight * 15, 'Путь: ');  
   textout(70 + 40 * length(way), BHeight * 15,'Стоимость проезда: ');  
   pen.Color := clBlack; 
   Font.Color := clRed;

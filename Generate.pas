@@ -21,7 +21,7 @@ begin
     for var j := 0 to GraphWidth - 1  do
       begin
         Graph[i][j] := ClassVertex.Create;// создаеться класс вершина
-        Graph[i][j]._name := inttostr(j + 1) + '-' + inttostr(i + 1); // присваивается имя ( = координате)
+        Graph[i][j]._name := chr(j + 97) + '-' + inttostr(i + 1); // присваивается имя ( = координате)
         if (i = 0) and (j = 0)  then
         begin
           Graph[i][j]._val := 0;
