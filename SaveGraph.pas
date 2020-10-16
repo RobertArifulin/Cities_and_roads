@@ -5,7 +5,6 @@ uses Describe, GraphABC, Generate;
 procedure WayFile;
 procedure DrawGraphFile;
 procedure NextNameFile;
-
 implementation
 
 procedure WayFile(); // сохроняет путь в файле
@@ -89,6 +88,7 @@ begin
         p.Save('Граф - ' + inttostr(FileName) + '.png');
       end;
 end;  // сохроняет граф в файле
+
 
 
 procedure NextNameFile(); // определяет название следующего файла

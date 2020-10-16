@@ -55,6 +55,7 @@ implementation
       GenerateGraph();
       ValWay();
       SetWay();
+      InterestingWayVal();
       DrawGraph();
       
       WriteWay();
@@ -235,7 +236,7 @@ implementation
       
       b4.Height := BHeight;
       b4.Width := BWidth + 55;
-      b4.Position := (BWidth * 2 + 100, BHeight * 13 + 10);
+      b4.Position := (BWidth * 2 + 120, BHeight * 13 + 10);
       
       b5.Height := BHeight;
       b5.Width := BWidth + 55;

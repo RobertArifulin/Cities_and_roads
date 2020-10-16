@@ -22,7 +22,7 @@ begin
   setpenwidth(1);
   brush.color := clWhite;
   pen.Color := clWhite; 
-  rectangle(0, 55, 1000, 800); // очищает часть окна
+  rectangle(0, 55, 1000, 625); // очищает часть окна
   line(0, 730, 1000, 730, rgb(0, 0, 0));
   for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
   for var i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));  

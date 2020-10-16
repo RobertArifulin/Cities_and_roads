@@ -11,12 +11,12 @@ type
  
  public
   _name : string;
-  _val, _MinWayVal : integer;
+  _val, _MinWayVal, _PrevVal : integer;
  end;  
 
 var
   Graph : array of array of ClassVertex; // граф - массив вершин
-  Way : array of string; // путь
+  Way, Right_Way, Current_Way : array of string; // путь
   f : text := new Text ;
   N_Window, dif, n, GraphWidth, GraphHeight,Prev_N_Window, FileName, FileSession: integer;
 end.

@@ -4,6 +4,7 @@ uses GraphABC, ABCButtons, Draw, Describe, Button, SaveGraph;
  
 begin
   b5.Visible := False;
+  b4.Visible := True;
   FileName := 1;
   FileSession := 1;
   N_Window := 1; //  какое окно открыто
@@ -19,7 +20,6 @@ begin
   b1.OnClick := procedure -> // нажатие на кнопку сгенерировать перемещает все кнопки
   begin
     b1_OnClick();
-    b4.Visible := True;
   end;
   
   
