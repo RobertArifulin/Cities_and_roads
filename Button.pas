@@ -55,9 +55,18 @@ implementation
       GenerateGraph();
       ValWay();
       SetWay();
-      InterestingWayVal();
+      //InterestingWayVal();
       DrawGraph();
-      
+      for var i := 0 to length(current_way) - 1 do Current_way[i] := '';
+      setlength(Current_Way, 0); 
+      //setlength(Current_Way, length(way) - 7); 
+      //for var i := 0 to length(way) - 8 do
+      //begin
+        setlength(current_way, 1);
+        Current_Way[0] := Way[length(way) - 1];
+      //end;
+      textout(BWidth * 3 + 160, BHeight * 11 + 10, (PossibleAction(GraphWidth, GraphHeight, Current_Way))[0] + (PossibleAction(GraphWidth, GraphHeight, Way))[1]);
+      textout(BWidth * 3 + 160, BHeight * 10 + 10,  Way[length(way) - 1]);
       WriteWay();
       Textout2();
       ButtonPosition2();

@@ -6,8 +6,10 @@ uses Describe;
 procedure GenerateGraph;
 procedure ValWay;
 procedure SetWay; 
+procedure CheckWay;
 procedure InterestingWayVal;
-//procedure GenerateRightWay;
+function PossibleAction(GWidth, GHeight :integer ; Path: array of string) : array of string;
+procedure GenerateRightWay;
 
 implementation
 
@@ -28,6 +30,7 @@ begin
         begin
           Graph[i][j]._val := 0;
           Graph[i][j]._MinWayVal := 0; ;// присваивается мин. стоимость проезда от начала (в начальной вершине, очевидно всегда = 0)
+          Graph[i][j]._PrevVal := 0;
         end
         else
         begin
@@ -177,7 +180,7 @@ begin
  
  min := 10000; // изночально стоимасть минимального пути "бесконечность"
  
- setlength(Current_Way, length(Current_Way) + 1); // первый элемент Current_Way - конечная точка (в Current_Way путь храниться задом на перед)
+ setlength(Current_Way, length(Current_Way) + 1); // первый элемент way - конечная точка (в way путь храниться задом на перед)
  Current_Way[0] := Graph[GraphHeight - 1][GraphWidth - 1]._name; 
  while (y <> 0) or (x <> 0) do // проходим по всем соседям, находим соседа с минимальной стоимость пути от начала до него
   begin
@@ -234,7 +237,7 @@ begin
 end; // запись кратчайшего пути для проверки
 
 
-procedure InterestingWayVal; // увеличивает стоимость пути, чтобы он был менее заметным
+procedure InterestingWayVal(); // увеличивает стоимость пути, чтобы он был менее заметным
 var
 flag: boolean;
 CheckVal : integer;
@@ -256,7 +259,7 @@ begin
               Graph[i][j]._val += 1;// увеличиваем ее стоимость на 1
               ValWay(); // алгоритм Дейкстры
               CheckWay(); // находим новый путь
-              if length(way) = length(current_way) then //начало проверки на совподение со старым путем
+              if length(way) = length(current_way) then //начало проверки на совпaдение со старым путем
               begin
                 for var s := 0 to length(way) - 1 do
                 begin
@@ -281,7 +284,108 @@ begin
         if Graph[i][j]._val = Graph[i][j]._PrevVal then CheckVal += 1; 
       end;
     if CheckVal = length(way) then flag := true; // если нельзя увеличить стоимость никакой вершины из пути, то цикл заканчивается
+    //flag := true;
   end;
 end; // увеличивает стоимость пути, чтобы он был менее заметным
+
+
+function PossibleAction(GWidth, GHeight :integer ; Path: array of string) : array of string;
+var
+CurrentPoint : String;
+x, y: integer;
+flag : boolean;
+begin
+  CurrentPoint := Path[length(Path) - 1] ; // имя последней точки пути
+  x := ord(CurrentPoint[1]) - 96; // координаты последней точки пути
+  y := strtoint(CurrentPoint[3]);
+  
+  
+  if y > 1 then
+  begin
+    flag := false;
+    for var i := 0 to length(path) - 2 do // каждой вершине пути
+    begin
+      if abs(ord(path[i][1]) - x - 96) + abs(strtoint(path[i][3]) - y + 1) <= 1 then flag := true;              
+    end;
+    if flag then exit; 
+    if (x > 2) and (x < GWidth - 1) then
+    begin
+     setlength(result, length(result) + 1);
+     result[length(result) - 1] := 'up';
+    end;
+  end
+  else
+  begin
+    setlength(result, length(result) + 1);
+    result[length(result) - 1] := '-';
+  end;
+  
+  
+  if y > GHeight then
+  begin
+    flag := false;
+    for var i := 0 to length(path) - 2 do // каждой вершине пути
+    begin
+      if abs(ord(path[i][1]) - x - 96) + abs(strtoint(path[i][3]) - y - 1) <= 1 then flag := true;              
+    end;
+    if flag then exit; 
+    setlength(result, length(result) + 1);
+    result[length(result) - 1] := 'down';
+    end
+    else
+    begin
+      setlength(result, length(result) + 1);
+      result[length(result) - 1] := '-';
+    end;
+  
+  
+  if x > 1 then
+  begin
+    flag := false;
+    for var i := 0 to length(path) - 2 do // каждой вершине пути
+    begin
+      if abs(ord(path[i][1]) - 96 - x + 1) + abs(strtoint(path[i][3]) - y) <= 1 then flag := true;              
+    end;
+    if flag then exit; 
+    if (y > 2) and (y < GHeight - 1) then
+    begin
+     setlength(result, length(result) + 1);
+     result[length(result) - 1] := 'left';
+    end;
+    end
+    else
+    begin
+      setlength(result, length(result) + 1);
+      result[length(result) - 1] := '-';
+    end;
+  
+  
+  if x < GWidth then
+  begin
+    flag := false;
+    for var i := 0 to length(path) - 2 do // каждой вершине пути
+    begin
+      if abs(ord(path[i][1]) - x - 96 - 1) + abs(strtoint(path[i][3]) - y) <= 1 then flag := true;              
+    end;
+    if flag then exit; 
+    setlength(result, length(result) + 1);
+    result[length(result) - 1] := 'right';
+  end
+  else
+  begin
+    setlength(result, length(result) + 1);
+    result[length(result) - 1] := '-';
+  end;
+  
+  
+end;
+
+
+procedure GenerateRightWay();
+begin
+  
+  
+end;
+
 
 end.
