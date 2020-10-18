@@ -39,7 +39,7 @@ begin
           Graph[i][j]._PrevVal := 0;
         end;
     end; 
-end;  // генерирует граф, с рандомными стоимостями
+end;  // генерирует граф, с рандомными стоимостями}
 
 
 procedure ValWay(); // алгоритм Дейкстры
@@ -293,11 +293,21 @@ function PossibleAction(GWidth, GHeight :integer ; Path: array of string) : arra
 var
 CurrentPoint : String;
 x, y: integer;
-flag : boolean;
+flag, flag_up, flag_left : boolean;
+res : array of string;
 begin
-  CurrentPoint := Path[length(Path) - 1] ; // имя последней точки пути
+  CurrentPoint := Path[length(path) - 1] ; // имя последней точки пути
   x := ord(CurrentPoint[1]) - 96; // координаты последней точки пути
   y := strtoint(CurrentPoint[3]);
+  setlength(res, 0);
+  flag_up := false;
+  flag_left := false;
+  
+  for var i := 1 to length(path) - 1 do
+  begin
+     if strtoint(path[i][3]) - strtoint(path[i - 1][3]) = -1 then flag_up := true;
+     if ord(path[i][1]) - ord(path[i - 1][1]) = 1 then flag_left := true;
+  end;
   
   
   if y > 1 then
@@ -305,38 +315,39 @@ begin
     flag := false;
     for var i := 0 to length(path) - 2 do // каждой вершине пути
     begin
-      if abs(ord(path[i][1]) - x - 96) + abs(strtoint(path[i][3]) - y + 1) <= 1 then flag := true;              
+      if abs(ord(path[i][1]) - x - 96) + abs(strtoint(path[i][3]) - (y - 1)) <= 1 then flag := true;              
     end;
-    if flag then exit; 
-    if (x > 2) and (x < GWidth - 1) then
+    if not flag and (x > 2) and (x < GWidth - 1) then
     begin
-     setlength(result, length(result) + 1);
-     result[length(result) - 1] := 'up';
+     if not flag_up and (x >= GWidth div 2) then 
+     begin
+       setlength(res, length(res) + 1);
+       res[length(res) - 1] := 'up';
+       result := res;
+       exit;
+     end
+     else
+     begin
+       setlength(res, length(res) + 1);
+       res[length(res) - 1] := 'up';
+     end;
     end;
-  end
-  else
-  begin
-    setlength(result, length(result) + 1);
-    result[length(result) - 1] := '-';
   end;
   
   
-  if y > GHeight then
+  if y < GHeight then
   begin
     flag := false;
     for var i := 0 to length(path) - 2 do // каждой вершине пути
     begin
-      if abs(ord(path[i][1]) - x - 96) + abs(strtoint(path[i][3]) - y - 1) <= 1 then flag := true;              
+      if abs(ord(path[i][1]) - x - 96) + abs(strtoint(path[i][3]) - (y + 1)) <= 1 then flag := true;              
     end;
-    if flag then exit; 
-    setlength(result, length(result) + 1);
-    result[length(result) - 1] := 'down';
-    end
-    else
+    if not flag then  
     begin
-      setlength(result, length(result) + 1);
-      result[length(result) - 1] := '-';
-    end;
+      setlength(res, length(res) + 1);
+      res[length(res) - 1] := 'down';
+   end;
+  end;
   
   
   if x > 1 then
@@ -344,20 +355,24 @@ begin
     flag := false;
     for var i := 0 to length(path) - 2 do // каждой вершине пути
     begin
-      if abs(ord(path[i][1]) - 96 - x + 1) + abs(strtoint(path[i][3]) - y) <= 1 then flag := true;              
+      if abs(ord(path[i][1]) - 96 - (x - 1)) + abs(strtoint(path[i][3]) - y) <= 1 then flag := true;              
     end;
-    if flag then exit; 
-    if (y > 2) and (y < GHeight - 1) then
+    if not flag and (y > 2) and (y < GHeight - 1) then
     begin
-     setlength(result, length(result) + 1);
-     result[length(result) - 1] := 'left';
+      if not flag_left and (y >= GHeight div 2) then 
+     begin
+       setlength(res, length(res) + 1);
+       res[length(res) - 1] := 'left';
+       result := res;
+       exit;
+     end
+     else
+     begin
+       setlength(res, length(res) + 1);
+       res[length(res) - 1] := 'left';
+     end;
     end;
-    end
-    else
-    begin
-      setlength(result, length(result) + 1);
-      result[length(result) - 1] := '-';
-    end;
+  end;
   
   
   if x < GWidth then
@@ -365,27 +380,90 @@ begin
     flag := false;
     for var i := 0 to length(path) - 2 do // каждой вершине пути
     begin
-      if abs(ord(path[i][1]) - x - 96 - 1) + abs(strtoint(path[i][3]) - y) <= 1 then flag := true;              
+      if abs(ord(path[i][1]) - 96 - (x + 1)) + abs(strtoint(path[i][3]) - y) <= 1 then flag := true;              
     end;
-    if flag then exit; 
-    setlength(result, length(result) + 1);
-    result[length(result) - 1] := 'right';
-  end
-  else
-  begin
-    setlength(result, length(result) + 1);
-    result[length(result) - 1] := '-';
+    if not flag then
+    begin 
+      setlength(res, length(res) + 1);
+      res[length(res) - 1] := 'right';
+    end;
   end;
   
-  
+  result := res;
 end;
 
 
 procedure GenerateRightWay();
+var
+NextAction : integer;
+begin
+  for var i := 0 to length(Current_Way) - 1 do Current_Way[i] := '';
+  setlength(Current_Way, 0);
+  
+  setlength(Current_Way, 1);
+  Current_Way[0] := 'a-1';
+  
+  while Current_Way[length(Current_Way) - 1] <> (chr(96 + GraphWidth) + '-' + inttostr(GraphHeight)) do
+  begin
+    NextAction := random(length(PossibleAction(GraphWidth, GraphHeight, Current_Way)));
+    //println('                                                                                                                                                                      '  , (PossibleAction(GraphWidth, GraphHeight, Current_Way)), NextAction);
+    //println('                                                                                                                                                                   '  , Current_way);
+    
+    if (PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'down' then
+    begin
+      setlength(Current_Way, length(Current_Way) + 1);
+      Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) + 1);
+      continue;
+    end;
+    if (PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'up' then
+    begin
+      setlength(Current_Way, length(Current_Way) + 1);
+      Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) - 1);
+      continue;
+    end;
+    if (PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'left' then
+    begin
+      setlength(Current_Way, length(Current_Way) + 1);
+      Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1]) - 1) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]));
+      continue;
+    end;
+    if (PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'right' then
+    begin
+      setlength(Current_Way, length(Current_Way) + 1);
+      Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1]) + 1) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]));
+      continue;
+    end;
+    
+  end;
+end;
+
+
+procedure GenerateGraphVal(); // генерирует граф, с рандомными стоимостями
 begin
   
-  
-end;
+  setlength(Graph, GraphHeight); // Задает длинны Graph (2-х мерного массива вершин), в соответствии с шириной и высотой графа
+  for var i := 0 to GraphHeight - 1 do
+    setlength(Graph[i], GraphWidth);
+    
+  for var i := 0 to GraphHeight - 1 do // каждой вершине...
+    for var j := 0 to GraphWidth - 1  do
+      begin
+        Graph[i][j] := ClassVertex.Create;// создаеться класс вершина
+        Graph[i][j]._name := chr(j + 97) + '-' + inttostr(i + 1); // присваивается имя ( = координате)
+        if (i = 0) and (j = 0)  then
+        begin
+          Graph[i][j]._val := 0;
+          Graph[i][j]._MinWayVal := 0; ;// присваивается мин. стоимость проезда от начала (в начальной вершине, очевидно всегда = 0)
+          Graph[i][j]._PrevVal := 0;
+        end
+        else
+        begin
+          Graph[i][j]._MinWayVal := 10000;// присваивается мин. стоимость проезда от начала 
+          Graph[i][j]._val := random(1, 40); // присваивается стоимость проезда
+          Graph[i][j]._PrevVal := 0;
+        end;
+    end; 
+end; 
 
 
 end.

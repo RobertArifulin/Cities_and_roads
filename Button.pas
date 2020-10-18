@@ -56,17 +56,27 @@ implementation
       ValWay();
       SetWay();
       //InterestingWayVal();
+      font.Size := 12;
+      GenerateRightWay();
       DrawGraph();
-      for var i := 0 to length(current_way) - 1 do Current_way[i] := '';
+      
+      {
+      for var i := 0 to length(current_way) - 1 do Current_way[i] := ''; // тестировщик функции PossibleAction
       setlength(Current_Way, 0); 
-      //setlength(Current_Way, length(way) - 7); 
-      //for var i := 0 to length(way) - 8 do
-      //begin
+
+      for var i := 0 to length(way) - 8 do
+      begin
         setlength(current_way, 1);
-        Current_Way[0] := Way[length(way) - 1];
-      //end;
-      textout(BWidth * 3 + 160, BHeight * 11 + 10, (PossibleAction(GraphWidth, GraphHeight, Current_Way))[0] + (PossibleAction(GraphWidth, GraphHeight, Way))[1]);
-      textout(BWidth * 3 + 160, BHeight * 10 + 10,  Way[length(way) - 1]);
+        Current_Way[0] := Way[length(way) - 6];
+      end;
+      textout(BWidth * 3 + 160, BHeight * 10 , length(Current_Way[length(Current_Way) - 1]) );
+      textout(BWidth * 3 + 180, BHeight * 10 , ord('a') );
+      textout(BWidth * 3 + 160, BHeight * 11 + 10, (PossibleAction(GraphWidth, GraphHeight, Current_Way))[0]);
+      textout(BWidth * 3 + 210, BHeight * 11 + 10, (PossibleAction(GraphWidth, GraphHeight, Current_Way))[1]);
+      textout(BWidth * 3 + 260, BHeight * 11 + 10, (PossibleAction(GraphWidth, GraphHeight, Current_Way))[2]);
+      textout(BWidth * 3 + 310, BHeight * 11 + 10, (PossibleAction(GraphWidth, GraphHeight, Current_Way))[3]);
+      textout(BWidth * 3 + 160, BHeight * 10 + 10,  Way[length(way) - 6]);}
+      
       WriteWay();
       Textout2();
       ButtonPosition2();

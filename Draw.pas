@@ -22,7 +22,7 @@ begin
   setpenwidth(1);
   brush.color := clWhite;
   pen.Color := clWhite; 
-  rectangle(0, 55, 1000, 625); // очищает часть окна
+  rectangle(0, 55, 1000, 636); // очищает часть окна
   line(0, 730, 1000, 730, rgb(0, 0, 0));
   for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
   for var i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));  
@@ -131,14 +131,14 @@ begin
   pen.Color := clWhite; 
   rectangle(0, 750, 1000, 800); // очищает часть окнo
   textout(5, BHeight * 15, 'Путь: ');  
-  textout(70 + 40 * length(way), BHeight * 15,'Стоимость проезда: ');  
+  textout(70 + 40 * length(current_way), BHeight * 15,'Стоимость проезда: ');  
   pen.Color := clBlack; 
   Font.Color := clRed;
-  for var i := 0 to length(way) - 1 do
+  for var i := 0 to length(current_way) - 1 do
   begin
-    textout(70 + 40 * i, BHeight * 15, way[length(way) - 1 - i]); 
+    textout(70 + 40 * i, BHeight * 15, current_way[i]); 
   end; 
-    textout(260 + 40 * length(way), BHeight * 15, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._MinWayVal); 
+    textout(260 + 40 * length(current_way), BHeight * 15, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._MinWayVal); 
   Font.Color := clBlack;
  end; // вывод пути в основном окне
 
