@@ -4,7 +4,7 @@ const
    BHeight = 50; // высота кнопки в основном окне
    Cell_size = 70; // сторона клеток в основном окне
    r = 25; //радиус вершины
-   
+   // new com master
 type
  ClassVertex = class // класс вершиина
  private
