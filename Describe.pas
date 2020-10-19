@@ -19,4 +19,5 @@ var
   Way, Interesting_Way, Current_Way : array of string; // путь
   f : text := new Text ;
   N_Window, dif, n, GraphWidth, GraphHeight,Prev_N_Window, FileName, FileSession: integer;
+  // new com current_new_branch
 end.
