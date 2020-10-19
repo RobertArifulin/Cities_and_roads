@@ -58,6 +58,7 @@ implementation
       //InterestingWayVal();
       font.Size := 12;
       GenerateRightWay();
+      GenerateGraphVal();
       DrawGraph();
       
       {

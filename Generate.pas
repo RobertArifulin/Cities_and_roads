@@ -9,7 +9,8 @@ procedure SetWay;
 procedure CheckWay;
 procedure InterestingWayVal;
 function PossibleAction(GWidth, GHeight :integer ; Path: array of string) : array of string;
-procedure GenerateRightWay;
+procedure GenerateRightWay; 
+procedure GenerateGraphVal;
 
 implementation
 
@@ -439,6 +440,8 @@ end;
 
 
 procedure GenerateGraphVal(); // генерирует граф, с рандомными стоимостями
+var
+flag : boolean;
 begin
   
   setlength(Graph, GraphHeight); // Задает длинны Graph (2-х мерного массива вершин), в соответствии с шириной и высотой графа
@@ -448,22 +451,18 @@ begin
   for var i := 0 to GraphHeight - 1 do // каждой вершине...
     for var j := 0 to GraphWidth - 1  do
       begin
-        Graph[i][j] := ClassVertex.Create;// создаеться класс вершина
-        Graph[i][j]._name := chr(j + 97) + '-' + inttostr(i + 1); // присваивается имя ( = координате)
-        if (i = 0) and (j = 0)  then
-        begin
-          Graph[i][j]._val := 0;
-          Graph[i][j]._MinWayVal := 0; ;// присваивается мин. стоимость проезда от начала (в начальной вершине, очевидно всегда = 0)
-          Graph[i][j]._PrevVal := 0;
-        end
+        flag := false;
+        for var h := 0 to length(Current_Way) - 1 do
+          if Graph[i][j]._name = Current_way[h] then 
+          begin
+            flag := true;
+            break;
+          end;
+        if flag then
+          Graph[i][j]._val := 0
         else
-        begin
-          Graph[i][j]._MinWayVal := 10000;// присваивается мин. стоимость проезда от начала 
-          Graph[i][j]._val := random(1, 40); // присваивается стоимость проезда
-          Graph[i][j]._PrevVal := 0;
-        end;
-    end; 
-end; 
-
+          Graph[i][j]._val := 41;
+      end;
+end;
 
 end.
