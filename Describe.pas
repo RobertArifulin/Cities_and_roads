@@ -15,6 +15,7 @@ type
  end;  
 
 var
+ // new com 2
   Graph : array of array of ClassVertex; // граф - массив вершин
   Way, Interesting_Way, Current_Way : array of string; // путь
   f : text := new Text ;
