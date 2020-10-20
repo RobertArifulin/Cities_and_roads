@@ -12,9 +12,9 @@ begin
   assign(f, 'Правильные пути.txt');
   Append(f);
   write(f,inttostr(FileName) + '. Путь: ');
-  for var i := 0 to length(way) - 1 do
+  for var i := 0 to length(current_way) - 1 do
   begin
-    Write(f, way[length(way) - 1 - i] + '  ');
+    Write(f, current_way[i] + '  ');
   end;
   write(f, 'Стоимость: ');
   write(f, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._MinWayVal + ' ' + #13 );

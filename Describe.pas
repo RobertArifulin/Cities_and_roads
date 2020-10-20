@@ -10,14 +10,14 @@ type
  private
  
  public
-  _name : string;
-  _val, _MinWayVal, _PrevVal : integer;
+  _Name : string;
+  _Val, _MinWayVal, _PrevVal, _NewMinWayVal : integer;
  end;  
 
 var
  // new com 2
   Graph : array of array of ClassVertex; // граф - массив вершин
-  Way, Interesting_Way, Current_Way : array of string; // путь
+  Way,  New_Way, Current_Way : array of string; // путь
   f : text := new Text ;
   N_Window, dif, n, GraphWidth, GraphHeight,Prev_N_Window, FileName, FileSession: integer;
   // new com current_new_branch
