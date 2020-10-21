@@ -124,7 +124,7 @@ begin
       if (Graph[y - 1][x]._MinWayVal < min) and ((y - 1 <> prev_y) or (x <> prev_x))then   
       begin
         min := Graph[y - 1][x]._MinWayVal; // min 
-        Graph[y][x]._MinWayVal := Graph[y][x]._Val + Graph[y - 1][x]._MinWayVal;
+        Graph[y - 1][x]._MinWayVal := Graph[y][x]._Val + Graph[y - 1][x]._MinWayVal;
       end;
     end;
     if x > 0 then // есть ли сосед слева
@@ -132,7 +132,7 @@ begin
       if (Graph[y][x - 1]._MinWayVal < min) and ((y <> prev_y) or (x - 1 <> prev_x)) then   
       begin
         min := Graph[y][x - 1]._MinWayVal;
-        Graph[y][x]._MinWayVal := Graph[y][x]._Val + Graph[y][x - 1]._MinWayVal;
+        Graph[y][x - 1]._MinWayVal := Graph[y][x]._Val + Graph[y][x - 1]._MinWayVal;
       end;
     end;
     if y < GraphHeight - 1 then // есть ли сосед снизу
@@ -181,18 +181,21 @@ begin
       for var j := 0 to GraphWidth - 1 do
       begin
         if (i = 0) and (j = 0)  then
-          Graph[i][j]._NewMinWayVal := 0
+         Graph[i][j]._NewMinWayVal := 0
         else
           Graph[i][j]._NewMinWayVal := 10000;
-      end;
+        end;
    
    
    while flag do // повторяем до тех пор, пока все стоимости путей от начальной точки до любой другой не будут минимально возможными
    begin
+     //print('d');
+     
      Flag := false; // остоновит цикл если ничего не измениться
       for var i := 0 to GraphHeight - 1 do // пробегаемся по всем вершинам
         for var j := 0 to GraphWidth - 1 do
         begin
+        //print(Graph[i][j]._NewMinWayVal);
             if i > 0 then // есть ли сосед сверху
             begin
               if Graph[i][j]._NewMinWayVal > Graph[i][j]._Val + Graph[i - 1][j]._NewMinWayVal then  // если стоимость проезда от начальной точки до данной больше, 
@@ -244,15 +247,17 @@ begin
  x := GraphWidth - 1;// запоминаем координаты нынешний вершины
  y := GraphHeight - 1;
  
- min := 1000000; // изночально стоимасть минимального пути "бесконечность"
+ min := 1000000; // изначально стоимасть минимального пути "бесконечность"
  
  setlength(New_Way, length(New_Way) + 1); // первый элемент way - конечная точка (в way путь храниться задом на перед)
  New_Way[0] := Graph[GraphHeight - 1][GraphWidth - 1]._name; 
  
  while (y <> 0) or (x <> 0) do // проходим по всем соседям, находим соседа с минимальной стоимость пути от начала до него
-  begin
+ begin
+   min := 1000000;
+  // print(x,' w ',y);
+    //этот блок ищет значение минимальной стоимость пути от начала до нее
     
-    //этот блок ищет значение минимальной стоимость пути от начала до него
     if y > 0 then // есть ли сосед сверху
     begin
       if (Graph[y - 1][x]._NewMinWayVal < min) and ((y - 1 <> prev_y) or (x <> prev_x))then   
@@ -274,7 +279,7 @@ begin
       if (Graph[y + 1][x]._NewMinWayVal < min) and ((y + 1 <> prev_y) or (x <> prev_x)) then   
       begin
         min := Graph[y + 1][x]._NewMinWayVal;
-        Graph[y + 1][x]._NewMinWayVal := Graph[y][x]._Val + Graph[y + 1][x]._NewMinWayVal;
+        Graph[y][x]._NewMinWayVal := Graph[y][x]._Val + Graph[y + 1][x]._NewMinWayVal;
       end;
     end;
     if x < GraphWidth - 1 then // есть ли сосед справа
@@ -282,7 +287,7 @@ begin
       if (Graph[y][x + 1]._NewMinWayVal < min) and ((y <> prev_y) or (x + 1 <> prev_x)) then   
       begin
         min := Graph[y][x + 1]._NewMinWayVal;
-        Graph[y][ + 1]._NewMinWayVal := Graph[y][x]._Val + Graph[y][x + 1]._NewMinWayVal;
+        Graph[y][x]._NewMinWayVal := Graph[y][x]._Val + Graph[y][x + 1]._NewMinWayVal;
       end;
     end;  
     
@@ -543,19 +548,20 @@ begin
             break;
           end;
         if flag then
-          Graph[i][j]._val := 0
+          Graph[i][j]._val := 1
         else
           Graph[i][j]._val := 41;
       end;
   
  NotAction := 0;
-  
-  while NotAction < GraphWidth * GraphHeight do
+ 
+  while NotAction < GraphWidth * GraphHeight * 2  do
   begin
+   // print(Graph);
     flag := false;
     x := random(GraphWidth);
     y := random(GraphHeight);
-    print(', ', NotAction, '-', Graph[y][x]._val, '(', x, ',', y, ')', 'asd');
+    //print(', ', NotAction, '-', Graph[y][x]._val, '(', x, ',', y, ')');
     for var h := 0 to length(Current_way) - 1 do
       if Graph[y][x]._Name = Current_way[h] then 
       begin
@@ -572,12 +578,12 @@ begin
       begin
         NotAction += 1;
         Graph[y][x]._val -= 1;
-      end
+      end 
       else NotAction := 0;
-      print('flag');
+     // print('flag');
     end
     
-    else
+    else if Graph[y][x]._val > 1 then
     begin
       Graph[y][x]._val -= 1;
       ValWayCheck();
@@ -588,12 +594,13 @@ begin
         Graph[y][x]._val += 1;
       end
       else NotAction := 0;
-      print('notflag');
+    //  print('notflag');
     end;
-   print(NotAction ,'-', Graph[y][x]._val);
-   println(New_Way);
+   //print(NotAction ,'-', Graph[y][x]._val);
+  // println(New_Way);
   end;
-  
+  Graph[GraphHeight - 1][GraphWidth - 1]._val := random(8, 50) ;
+  ValWayCheck();
 end;// задает стоимости графа
 
 

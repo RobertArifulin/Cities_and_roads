@@ -5,6 +5,7 @@ uses GraphABC, ABCButtons, Draw, Describe, Button, SaveGraph;
 begin
   b5.Visible := False;
   b4.Visible := True;
+  b6.Visible := False;
   FileName := 1;
   FileSession := 1;
   N_Window := 1; //  какое окно открыто
@@ -55,7 +56,11 @@ begin
   b5.OnClick := procedure ->
   begin
     b5_OnClick();
-    b4.Visible := True;
+  end;
+  
+  b6.OnClick := procedure ->
+  begin
+    b6_OnClick();
   end;
   
 end.

@@ -1,7 +1,7 @@
 ﻿unit Draw; // рисует основное окно
 interface
 
-uses GraphABC, Describe, Generate;
+uses GraphABC, Describe;
 
 procedure FirstWindow;
 procedure MainWindow;
@@ -10,6 +10,9 @@ procedure Textout2;
 procedure DrawGraph;
 procedure WriteWay;
 procedure HelpWindow; // рисует окно помощи 
+procedure DrawWay;
+procedure CloseWay;
+
 
 implementation
 
@@ -110,8 +113,8 @@ begin
        if (i = 1) and (j = 1) then
          textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 7, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , 'Start');
 
-         
-       //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 15, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i - 1][j - 1]._MinWayVal)); // вывод параметра, для проверки на корректность работы алгоритма
+        
+       //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 15, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i - 1][j - 1]._NewMinWayVal)); // вывод параметра, для проверки на корректность работы алгоритма
        brush.Color := argb(0,0,0,0);// настраиваем шрифт подписи координат
        Font.Color := clBlack;
        Font.Size := 24;
@@ -138,12 +141,104 @@ begin
   begin
     textout(70 + 40 * i, BHeight * 15, current_way[i]); 
   end; 
-    textout(260 + 40 * length(current_way), BHeight * 15, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._MinWayVal); 
+    textout(260 + 40 * length(current_way), BHeight * 15, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._NewMinWayVal); 
   Font.Color := clBlack;
  end; // вывод пути в основном окне
 
 
+procedure DrawWay();
+var
+flag : boolean;
+begin
+  flag := false;
+ for var i := 1 to GraphHeight do // перебираем все координаты вершин
+    for var j := 1 to GraphWidth  do
+    begin
+      
+      flag := false;
+      if i > 0 then
+      begin
+        for var h := 0 to length(Current_Way) - 1 do
+          if (Graph[i][j]._Name = Current_Way[h]) and ((Graph[i - 1][j]._Name = Current_Way[h + 1]) or (Graph[i - 1][j]._Name = Current_Way[h - 1])) then
+          begin
+            flag := true;
+            break;
+          end;
+        if (i <> GraphHeight) and flag then
+        begin
+          line((j + (GraphWidth div 2)) * Cell_size + 1, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 1, ((i - 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed );// рисуем вертикальные ребра
+          line((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i - 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed);// толщиной 2 пикселя
+        end;
+      end;
+      
+      flag := false;
+      if i < GraphHeight then
+      begin
+        for var h := 0 to length(Current_Way) - 1 do
+          if (Graph[i][j]._Name = Current_Way[h]) and ((Graph[i + 1][j]._Name = Current_Way[h + 1]) or (Graph[i - 1][j]._Name = Current_Way[h - 1])) then
+          begin
+            flag := true;
+            break;
+          end;
+       if (i <> GraphHeight) and flag then
+        begin
+          line((j + (GraphWidth div 2)) * Cell_size + 1, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 1, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed );// рисуем вертикальные ребра
+          line((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed);// толщиной 2 пикселя
+        end;
+      end;
+      
+      flag := false;
+      if j > 0 then
+      begin
+        for var h := 0 to length(Current_Way) - 1 do
+          if (Graph[i][j]._Name = Current_Way[h]) and ((Graph[i][j - 1]._Name = Current_Way[h + 1]) or (Graph[i][j - 1]._Name = Current_Way[h - 1])) then
+          begin
+            flag := true;
+            break;
+          end;
+        if (j <> GraphWidth) and flag then
+        begin
+          line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 6,((j - 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 6, clRed); // рисуем горизонтальные ребра
+          line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 5,((j - 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 5, clRed); // толщиной 2 пикселя
+        end;
+      end;
+        
+      flag := false;
+      if j < GraphWidth then
+      begin
+        for var h := 0 to length(Current_Way) - 1 do
+          if (Graph[i][j]._Name = Current_Way[h]) and ((Graph[i][j + 1]._Name = Current_Way[h + 1]) or (Graph[i][j + 1]._Name = Current_Way[h - 1])) then
+          begin
+            flag := true;
+            break;
+          end;
+        if (j <> GraphWidth) and flag then
+        begin
+          line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 6,((j + 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 6, clRed); // рисуем горизонтальные ребра
+          line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 5,((j + 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 5, clRed); // толщиной 2 пикселя
+        end;
+      end;  
+    end;
+end;
 
+
+procedure CloseWay();
+begin
+ for var i := 1 to GraphHeight do // перебираем все координаты вершин
+    for var j := 1 to GraphWidth  do
+    begin
+      if j <> GraphWidth then
+       begin
+        line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 6,((j + 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 6); // рисуем горизонтальные ребра
+        line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 5,((j + 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 5 ); // толщиной 2 пикселя
+       end;
+       if i <> GraphHeight then
+       begin
+        line((j + (GraphWidth div 2)) * Cell_size + 1, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 1, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );// рисуем вертикальные ребра
+        line((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );// толщиной 2 пикселя
+       end;
+    end;
+end;
 
 
 end.
