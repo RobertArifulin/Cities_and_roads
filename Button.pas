@@ -10,8 +10,8 @@ b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увел�
 b2_2 := new ButtonABC(245,BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Уменьшить сложность', rgb(100, 100, 255));
 b3_2 := new ButtonABC(245, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Уменьшить Количество', rgb(100, 100, 255));
 b4 := new ButtonABC(10, BHeight * 8 , BWidth * 2 + 70, BHeight * 2, 'Помощь', clWhite);
-b5 := new ButtonABC(10, BHeight * 10 , BWidth * 2 + 70, BHeight * 2, 'Назат', clWhite);
-b6 := new ButtonABC(10, BHeight * 10 , BWidth * 2 + 50, BHeight * 2, 'Показать Путь', clWhite);
+b5 := new ButtonABC(10, BHeight * 10 , BWidth * 2 + 70, BHeight * 2, 'Назад', clWhite);
+b6 := new ButtonABC(10, BHeight * 10 , BWidth * 2 + 45, BHeight * 2, 'Показать Путь', clWhite);
 
 procedure b1_OnClick;
 procedure b2_1_OnClick;
@@ -161,7 +161,7 @@ implementation
   begin
     if b6.Text = 'Показать Путь' then
     begin
-      b6.Text := 'Скрыть текст';
+      b6.Text := 'Скрыть путь';
       DrawWay();
     end
     else
@@ -257,7 +257,7 @@ implementation
     b5.Position := (BWidth * 3 + 160, BHeight * 13 + 10);
     
     b6.Height := BHeight;
-    b6.Width := BWidth + 55;
+    b6.Width := BWidth + 45;
     b6.Position := (BWidth * 2 + 125 + b5.Width , BHeight * 13 + 10);
     
   end; //меняет параметры кнопок под основное окно
