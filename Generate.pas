@@ -7,13 +7,13 @@ procedure GenerateGraph;
 procedure ValWay;
 procedure SetWay; 
 procedure ReadWayCheck;
-//procedure InterestingWayVal;
-procedure GenerateRightWay; 
+procedure GenerateRightWay;
+//procedure GenerateSecondWay;
 procedure GenerateGraphVal;
 procedure ValWayCheck;
 function PossibleAction(GWidth, GHeight :integer ; Path: array of string) : array of string;
 function CurrentWayCheck(NewPath, CurrentPath: array of string): boolean;
-
+//function PossibleAction2(GWidth, GHeight :integer ; Path: array of string) : array of string;
 implementation
 
 
@@ -308,58 +308,6 @@ begin
   end;
 end; // запись кратчайшего пути для проверки
 
-{
-procedure InterestingWayVal(); // увеличивает стоимость пути, чтобы он был менее заметным
-var
-flag: boolean;
-CheckVal : integer;
-begin
-  flag := false;
-  while not flag do // пок 
-  begin
-    CheckVal := 0;
-    for var i := 0 to GraphHeight - 1 do // каждой вершине...
-      for var j := 0 to GraphWidth - 1  do
-      begin
-        if (i <> 0) or (j <> 0) then
-        begin
-          for var h := 0 to length(way) - 1 do // проходим все элементы массива пути
-          begin
-            if Graph[i][j]._name = way[h] then // если эта вершина входит в путь, то...
-            begin
-              Graph[i][j]._PrevVal := Graph[i][j]._val;
-              Graph[i][j]._val += 1;// увеличиваем ее стоимость на 1
-              ValWay(); // алгоритм Дейкстры
-              ReadWayCheck(); // находим новый путь
-              if length(way) = length(New_Way) then //начало проверки на совпaдение со старым путем
-              begin
-                for var s := 0 to length(way) - 1 do
-                begin
-                  if New_Way[s] <> way[s] then
-                  begin
-                    Graph[i][j]._val -= 1;// возвращаем вершине стоимость, если путь изменился 
-                    break;
-                  end;
-                end;
-              end
-              else
-                Graph[i][j]._val -= 1;// конец
-              ValWay();
-              break; // выходим из цикла for, как только проверили вершину, которая входит в путь
-            end;
-          end;
-        end;
-      end;
-    for var i := 0 to GraphHeight - 1 do // каждой вершине...
-      for var j := 0 to GraphWidth - 1  do
-      begin
-        if Graph[i][j]._val = Graph[i][j]._PrevVal then CheckVal += 1; 
-      end;
-    if CheckVal = length(way) then flag := true; // если нельзя увеличить стоимость никакой вершины из пути, то цикл заканчивается
-    //flag := true;
-  end;
-end; // увеличивает стоимость пути, чтобы он был менее заметным}
-
 
 function PossibleAction(GWidth, GHeight :integer ; Path: array of string) : array of string;
 var
@@ -509,6 +457,51 @@ begin
   end;
 end;
 
+{
+procedure GenerateSecondWay();
+var
+NextAction : integer;
+begin
+  
+  for var i := 0 to length(Second_Way) - 1 do Second_Way[i] := '';
+  setlength(Second_Way, 0);
+  
+  setlength(Second_Way, 1);
+  Second_Way[0] := 'a-1';
+  
+  while Second_Way[length(Second_Way) - 1] <> (chr(96 + GraphWidth) + '-' + inttostr(GraphHeight)) do
+  begin
+    NextAction := random(length(PossibleAction2(GraphWidth, GraphHeight, Second_Way)));
+    //println('                                                                                                                                                                      '  , (PossibleAction22(GraphWidth, GraphHeight, Second_Way)), NextAction);
+    //println('                                                                                                                                                                   '  , Second_Way);
+    
+    if (PossibleAction2(GraphWidth, GraphHeight, Second_Way))[NextAction] = 'down' then
+    begin
+      setlength(Second_Way, length(Second_Way) + 1);
+      Second_Way[length(Second_Way) - 1] := chr(ord(Second_Way[length(Second_Way) - 2][1])) + '-' + inttostr(strtoint(Second_Way[length(Second_Way) - 2][3]) + 1);
+      continue;
+    end;
+    if (PossibleAction2(GraphWidth, GraphHeight, Second_Way))[NextAction] = 'up' then
+    begin
+      setlength(Second_Way, length(Second_Way) + 1);
+      Second_Way[length(Second_Way) - 1] := chr(ord(Second_Way[length(Second_Way) - 2][1])) + '-' + inttostr(strtoint(Second_Way[length(Second_Way) - 2][3]) - 1);
+      continue;
+    end;
+    if (PossibleAction2(GraphWidth, GraphHeight, Second_Way))[NextAction] = 'left' then
+    begin
+      setlength(Second_Way, length(Second_Way) + 1);
+      Second_Way[length(Second_Way) - 1] := chr(ord(Second_Way[length(Second_Way) - 2][1]) - 1) + '-' + inttostr(strtoint(Second_Way[length(Second_Way) - 2][3]));
+      continue;
+    end;
+    if (PossibleAction2(GraphWidth, GraphHeight, Second_Way))[NextAction] = 'right' then
+    begin
+      setlength(Second_Way, length(Second_Way) + 1);
+      Second_Way[length(Second_Way) - 1] := chr(ord(Second_Way[length(Second_Way) - 2][1]) + 1) + '-' + inttostr(strtoint(Second_Way[length(Second_Way) - 2][3]));
+      continue;
+    end;
+end;
+end;}
+
 
 function CurrentWayCheck(NewPath, CurrentPath: array of string): boolean ;
 var
@@ -555,7 +548,7 @@ begin
   
  NotAction := 0;
  
-  while NotAction < GraphWidth * GraphHeight * 2  do
+  while NotAction < GraphWidth * GraphHeight * 4  do
   begin
    // print(Graph);
     flag := false;

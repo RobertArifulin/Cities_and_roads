@@ -132,16 +132,19 @@ procedure WriteWay(); // вывод пути в основном окне
 begin
   brush.color := clWhite;
   pen.Color := clWhite; 
-  rectangle(0, 750, 1000, 800); // очищает часть окнo
-  textout(5, BHeight * 15, 'Путь: ');  
-  textout(70 + 40 * length(current_way), BHeight * 15,'Стоимость проезда: ');  
+  rectangle(0, 735, 1000, 800); // очищает часть окнo
+  textout(5, BHeight * 15 - 15, 'Путь: ');  
+  textout(70 + 40 * 17, BHeight * 16 - 35,'Стоимость проезда: ');
   pen.Color := clBlack; 
   Font.Color := clRed;
   for var i := 0 to length(current_way) - 1 do
   begin
-    textout(70 + 40 * i, BHeight * 15, current_way[i]); 
+    if 100 + 40 * i > Window.Width then
+      textout(70 + 40 * (i - 21), BHeight * 16 - 35, current_way[i])
+    else 
+      textout(70 + 40 * i, BHeight * 15 - 15, current_way[i])
   end; 
-    textout(260 + 40 * length(current_way), BHeight * 15, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._NewMinWayVal); 
+    textout(260 + 40 * 17, BHeight * 16 - 35, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._NewMinWayVal);
   Font.Color := clBlack;
  end; // вывод пути в основном окне
 
