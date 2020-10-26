@@ -17,7 +17,7 @@ procedure CloseWay;
 implementation
 
 
-procedure MainWindow;
+procedure MainWindow;// все плохо
 begin
   SetWindowSize(1000, 800); // параметры окна
   SetWindowLeft(ScreenWidth div 2 - 500);
