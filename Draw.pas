@@ -17,7 +17,7 @@ implementation
 procedure MainWindow; // gg
 begin
   SetWindowSize(1000, 800); // параметры окна
-  SetWindowLeft(ScreenWidth div 2 - 500);
+  SetWindowLeft(ScreenWidth div 2 - 500); 
   SetWindowTop(10);
   setpenwidth(1);
   brush.color := clWhite;
