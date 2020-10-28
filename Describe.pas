@@ -19,6 +19,8 @@ var
   Graph : array of array of ClassVertex; // граф - массив вершин
   Way,  New_Way, Current_Way, Second_way : array of string; // путь
   f : text := new Text ;
-  N_Window, dif, n, GraphWidth, GraphHeight,Prev_N_Window, FileName, FileSession: integer;
+  f1 : text;
+  s : string;
+  N_Window, dif, n, GraphWidth, GraphHeight,Prev_N_Window, FileName, FileSession, GoLeft, GoUp: integer;
   // new com current_new_branch
 end.

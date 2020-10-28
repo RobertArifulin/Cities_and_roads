@@ -3,6 +3,8 @@
 uses GraphABC, ABCButtons, Draw, Describe, Button, SaveGraph;
  
 begin
+  
+  
   b5.Visible := False;
   b4.Visible := True;
   b6.Visible := False;

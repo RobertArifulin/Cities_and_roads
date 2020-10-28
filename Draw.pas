@@ -46,7 +46,7 @@ begin
   SetWindowSize(1000, 800); // параметры окна
   SetWindowLeft(ScreenWidth div 2 - 500);
   SetWindowTop(10);
-  textout(100,100,'Помощь');
+  textout(100, 100, 'Помощь');
 end; // рисует окно помощи 
 
 
@@ -66,6 +66,8 @@ begin
   brush.color := clWhite;
   textout(10, BHeight * 13 + 10, 'Сложность следующего графа: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
   textout(10, BHeight * 13 + 35, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    ');
+  font.Size := 12;
+   textout(10, BHeight * 11 + 55, s);
 end; // выводит кол-во генераций, сложность и путь в основном окне
 
 
@@ -114,7 +116,7 @@ begin
          textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 7, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , 'Start');
 
         
-       //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 15, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 5, inttostr(Graph[i - 1][j - 1]._NewMinWayVal)); // вывод параметра, для проверки на корректность работы алгоритма
+       //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 20, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 10, inttostr(Graph[i - 1][j - 1]._NewMinWayVal)); // вывод параметра, для проверки работы алгоритма
        brush.Color := argb(0,0,0,0);// настраиваем шрифт подписи координат
        Font.Color := clBlack;
        Font.Size := 24;
@@ -177,6 +179,8 @@ begin
           end;
         if (i <> GraphHeight) and flag then
         begin
+          line((j + (GraphWidth div 2)) * Cell_size + 2, (i - 1 + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 2, ((i) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed );// рисуем вертикальные ребра
+          line((j + (GraphWidth div 2)) * Cell_size - 1, (i  - 1 + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size - 1, ((i) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed);// толщиной 2 пикселя
           line((j + (GraphWidth div 2)) * Cell_size + 1, (i - 1 + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 1, ((i) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed );// рисуем вертикальные ребра
           line((j + (GraphWidth div 2)) * Cell_size, (i  - 1 + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed);// толщиной 2 пикселя
         end;
@@ -201,6 +205,8 @@ begin
           end;
         if (i <> GraphHeight) and flag then
         begin
+          line((j + (GraphWidth div 2)) * Cell_size + 2, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 2, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed );// рисуем вертикальные ребра
+          line((j + (GraphWidth div 2)) * Cell_size - 1, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size - 1, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed);// толщиной 2 пикселя
           line((j + (GraphWidth div 2)) * Cell_size + 1, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 1, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed );// рисуем вертикальные ребра
           line((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clRed);// толщиной 2 пикселя
         end;
@@ -225,6 +231,8 @@ begin
           end;
         if (j <= GraphWidth) and flag then
         begin
+          line((j - 1 + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 7,((j) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 7, clRed); // рисуем горизонтальные ребра
+          line((j - 1 + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 4,((j) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 4, clRed); // толщиной 2 пикселя
           line((j - 1 + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 6,((j) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 6, clRed); // рисуем горизонтальные ребра
           line((j - 1 + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 5,((j) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 5, clRed); // толщиной 2 пикселя
         end;
@@ -249,8 +257,10 @@ begin
           end;
           if (j <= GraphWidth) and flag then
           begin
-            line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 6,((j + 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 6, clRed); // рисуем горизонтальные ребра
+            line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 4,((j + 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 4, clRed); // рисуем горизонтальные ребра
             line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 5,((j + 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 5, clRed); // толщиной 2 пикселя
+            line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 6,((j + 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 6, clRed); // рисуем горизонтальные ребра
+            line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 7,((j + 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 7, clRed); // толщиной 2 пикселя
           end;
         end;  
     end;
@@ -265,11 +275,15 @@ begin
     begin
       if j <> GraphWidth then
        begin
+        line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 7,((j + 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 7, clWhite); // рисуем горизонтальные ребра
+        line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 4,((j + 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 4, clWhite ); // толщиной 2 пикселя
         line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 6,((j + 1) + (GraphWidth div 2)) * Cell_size - r , (i + (2 - GraphHeight div 6)) * Cell_size + 6); // рисуем горизонтальные ребра
         line((j + (GraphWidth div 2)) * Cell_size + r, (i + (2 - GraphHeight div 6)) * Cell_size + 5,((j + 1) + (GraphWidth div 2)) * Cell_size - r, (i + (2 - GraphHeight div 6)) * Cell_size + 5 ); // толщиной 2 пикселя
        end;
        if i <> GraphHeight then
        begin
+        line((j + (GraphWidth div 2)) * Cell_size + 2, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 2, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clWhite );// рисуем вертикальные ребра
+        line((j + (GraphWidth div 2)) * Cell_size - 1, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size - 1, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5, clWhite );// толщиной 2 пикселя
         line((j + (GraphWidth div 2)) * Cell_size + 1, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size + 1, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );// рисуем вертикальные ребра
         line((j + (GraphWidth div 2)) * Cell_size, (i + (2 - GraphHeight div 6)) * Cell_size + r + 5,(j + (GraphWidth div 2)) * Cell_size, ((i + 1) + (2 - GraphHeight div 6)) * Cell_size - r + 5 );// толщиной 2 пикселя
        end;

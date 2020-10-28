@@ -24,13 +24,19 @@ end; // сохроняет путь в файле
 
 procedure DrawGraphFile(); // сохроняет граф в файле
 begin
+
+  
   GraphHeight := (2 + dif); // зависимость высоты и ширины от сложности
   GraphWidth := (6 + dif mod 2);
   var p : Picture := new Picture(1000, (GraphHeight + 1 + (2 - GraphHeight div 6)) * Cell_size);
   
+  Font.Size := 12; // настройки шрифта
+  pen.Color := clBlack;
+  p.TextOut(5 ,5 , s);
+    
   pen.Color := clWhite;
   brush.Color := clWhite;
-  p.rectangle(0, 0, 1000, 625);
+  p.rectangle(0, 21, 1000, 625);
   for var i := 1 to 9 do p.line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
   for var i := 1 to 14 do p.line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));
   
@@ -79,13 +85,14 @@ begin
         Font.Color := clBlack;
         Font.Size := 24;
         p.textout((GraphWidth div 2) * Cell_size - 9, (i + (2 - GraphHeight div 6)) * Cell_size - 13, inttostr(i)); // y координаты
-        p.textout((j + (GraphWidth div 2)) * Cell_size - 9, ((2 - GraphHeight div 6)) * Cell_size - 13, inttostr(j)); // x координаты
+        p.textout((j + (GraphWidth div 2)) * Cell_size - 9, ((2 - GraphHeight div 6)) * Cell_size - 13,  chr(96 + j)); // x координаты
         p.textout((GraphWidth div 2) * Cell_size - 9, (2 - GraphHeight div 6) * Cell_size - 13, '0'); // 0
          
         brush.Color := argb(0,0,0,0); // возвращаем шрифт как был
         Font.Color := clBlack;
         Font.Size := 14;  
         p.Save('Граф - ' + inttostr(FileName) + '.png');
+ 
       end;
 end;  // сохроняет граф в файле
 

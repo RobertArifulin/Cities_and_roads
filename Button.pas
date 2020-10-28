@@ -36,12 +36,24 @@ implementation
   begin
     if N_Window <> 3 then 
     begin
+      
+      assign(f1, 'Условие.txt');
+      reset(f1);
+      readln(f1, s);
+      close(f1);
+      
+      for var i := 1 to n do
+      begin
+     
+      
       b5.Visible := False;
       if N_Window <> 2 then
       Prev_N_Window := N_Window;
       N_window := 2;
       MainWindow();
       
+      
+        
       GenerateGraph();
       //ValWay();
       //SetWay();
@@ -50,8 +62,10 @@ implementation
       GenerateRightWay();
       //print('GenerateRightWay();');
       GenerateGraphVal();
+      GenerateSecondWay();
       ValWayCheck();
       //print(' GenerateGraphVal();');
+      
       DrawGraph();
      // print('DrawGraph();');
       
@@ -64,6 +78,7 @@ implementation
       NextNameFile();
       DrawGraphFile();
       WayFile();
+      end;
     end;
   end;
 
