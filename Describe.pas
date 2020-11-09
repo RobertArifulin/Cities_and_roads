@@ -21,6 +21,7 @@ var
   f : text := new Text ;
   f1 : text;
   s : string;
+  ManyWays : boolean;
   N_Window, dif, n, GraphWidth, GraphHeight,Prev_N_Window, FileName, FileSession, GoLeft, GoUp: integer;
   // new com current_new_branch
 end.

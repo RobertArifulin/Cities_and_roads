@@ -17,7 +17,7 @@ begin
     Write(f, current_way[i] + '  ');
   end;
   write(f, 'Стоимость: ');
-  write(f, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._MinWayVal + ' ' + #13 );
+  write(f, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._NewMinWayVal + ' ' + #13 );
   close(f);
 end; // сохроняет путь в файле
 
@@ -30,13 +30,17 @@ begin
   GraphWidth := (6 + dif mod 2);
   var p : Picture := new Picture(1000, (GraphHeight + 1 + (2 - GraphHeight div 6)) * Cell_size);
   
+  pen.Color := clWhite;
+  brush.Color := clWhite;
+  p.rectangle(0, 0, 1000, 625);
+  
   Font.Size := 12; // настройки шрифта
   pen.Color := clBlack;
   p.TextOut(5 ,5 , s);
     
   pen.Color := clWhite;
   brush.Color := clWhite;
-  p.rectangle(0, 21, 1000, 625);
+  p.rectangle(0, 22, 1000, 625);
   for var i := 1 to 9 do p.line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
   for var i := 1 to 14 do p.line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));
   

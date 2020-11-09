@@ -8,6 +8,7 @@ begin
   b5.Visible := False;
   b4.Visible := True;
   b6.Visible := False;
+  ManyWays := False;
   FileName := 1;
   FileSession := 1;
   N_Window := 1; //  какое окно открыто
@@ -20,13 +21,13 @@ begin
   FirstWindow();
   Textout1();
   
-  b1.OnClick := procedure -> // нажатие на кнопку сгенерировать перемещает все кнопки
+  b1.OnClick := procedure ->// нажатие на кнопку сгенерировать перемещает все кнопки
   begin
     b1_OnClick();
   end;
   
   
-  b2_1.OnClick := procedure -> // увеличивает сложность, при нажатии
+  b2_1.OnClick := procedure ->// увеличивает сложность, при нажатии
   begin
     b2_1_OnClick();
   end;
@@ -50,19 +51,25 @@ begin
   end;
 
 
-  b4.OnClick := procedure ->
+  b4.OnClick := procedure ->// кнопка помощи
   begin
     b4_OnClick();
   end;
   
-  b5.OnClick := procedure ->
+  b5.OnClick := procedure ->// кнопка возврата из помощи
   begin
     b5_OnClick();
   end;
   
-  b6.OnClick := procedure ->
+
+  b6.OnClick := procedure ->// кнопка показа пути
   begin
     b6_OnClick();
   end;
   
+  b7.OnClick := procedure ->// Кнопка регулирующаю кол-во путей
+  begin
+    b7_OnClick();
+  end;
+
 end.

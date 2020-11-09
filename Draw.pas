@@ -41,12 +41,19 @@ end; // рисует 1-ое окно
 
 
 procedure HelpWindow(); // рисует окно помощи (не сделано)
+var
+p1, p2 : Picture;
 begin
+  p1 := Picture.Create('1.png');
+  p1.Load('1.png');
+  p2 := Picture.Create('2.png');
+  p2.Load('2.png');
   Window.Clear();
   SetWindowSize(1000, 800); // параметры окна
   SetWindowLeft(ScreenWidth div 2 - 500);
   SetWindowTop(10);
-  textout(100, 100, 'Помощь');
+  p1.Draw(10,0);
+  p2.Draw(320,0);
 end; // рисует окно помощи 
 
 
@@ -116,7 +123,7 @@ begin
          textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 7, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , 'Start');
 
         
-       //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 20, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 10, inttostr(Graph[i - 1][j - 1]._NewMinWayVal)); // вывод параметра, для проверки работы алгоритма
+       textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 20, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 10, inttostr(Graph[i - 1][j - 1]._NewMinWayVal)); // вывод параметра, для проверки работы алгоритма
        brush.Color := argb(0,0,0,0);// настраиваем шрифт подписи координат
        Font.Color := clBlack;
        Font.Size := 24;

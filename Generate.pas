@@ -8,7 +8,7 @@ procedure ValWay;
 procedure SetWay; 
 procedure ReadWayCheck;
 procedure GenerateRightWay;
-procedure GenerateSecondWay;
+procedure CorrectGraphVal;
 procedure GenerateGraphVal;
 procedure ValWayCheck;
 function PossibleAction(GWidth, GHeight :integer ; Path: array of string) : array of string;
@@ -416,6 +416,7 @@ end;
 procedure GenerateRightWay();
 var
 NextAction : integer;
+ar : array of string;
 begin
   for var i := 0 to length(Current_Way) - 1 do Current_Way[i] := '';
   setlength(Current_Way, 0);
@@ -424,13 +425,15 @@ begin
   Current_Way[0] := 'a-1';
   GoLeft := 0;
   GoUp := 0;
+  
   while Current_Way[length(Current_Way) - 1] <> (chr(96 + GraphWidth) + '-' + inttostr(GraphHeight)) do
   begin
+    NextAction := 0;
     NextAction := random(length(PossibleAction(GraphWidth, GraphHeight, Current_Way)));
     //println('                                                                                                                                                                      '  , (PossibleAction(GraphWidth, GraphHeight, Current_Way)), NextAction);
     //println('                                                                                                                                                                   '  , Current_way);
-    
-    if (PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'down' then
+   ar := PossibleAction(GraphWidth, GraphHeight, Current_Way);
+   if (PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'down' then
     begin
       setlength(Current_Way, length(Current_Way) + 1);
       Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) + 1);
@@ -481,7 +484,7 @@ begin
 end;
 
 
-procedure GenerateSecondWay();
+procedure CorrectGraphVal();
 var
 flag1, leftinway, upinway, downinway, rightinway :boolean; left, up, down, right :integer;
 begin
@@ -572,7 +575,7 @@ end;
 
 procedure GenerateGraphVal(); // задает стоимости графа
 var
-active_top: array of string;
+active_top:string;
 flag, flag1 : boolean;
 NotAction, x, y, randval, b: integer;
 s,t : string;
@@ -582,14 +585,6 @@ begin
   for var i := 0 to GraphHeight - 1 do
     setlength(Graph[i], GraphWidth);
    
-  setlength(active_top, 0); 
-  for var i := 1 to GraphHeight do // каждой вершине...
-    for var j := 1 to GraphWidth do
-      begin
-      setlength(active_top, length(active_top) + 1);
-      active_top[length(active_top) - 1] := inttostr(i * 10 + j);
-      end;
-
   for var i := 0 to GraphHeight - 1 do // каждой вершине...
     for var j := 0 to GraphWidth - 1  do
       begin
@@ -607,22 +602,14 @@ begin
       end;
   
  NotAction := 0;
- 
- //println('');
-// println('');
- //println('');
-//println('');
-// println('', active_top.FindIndex(active_top,x -> x ='12'));
-     
+ active_top := '';  
      
   while NotAction < GraphWidth * GraphHeight * 4  do
   begin
-   // print(Graph);
+    
     flag := false;
-    b := random(length(active_top));
     x := random(GraphWidth);
     y := random(GraphHeight);
-    s := inttostr((y+1)*10 + x +1);
     randval := random(1, 3);
    // print(s);
    // print(active_top.FindIndex(active_top, t -> t = s));
@@ -644,11 +631,8 @@ begin
       begin
         NotAction += 1;
         Graph[y][x]._val -= randval;
-        active_top := active_top.Slice(0, 1, active_top.FindIndex(active_top,x -> x = s)) + active_top.Slice(active_top.FindIndex(active_top,x -> x = s), 1, length(active_top) - 1) ;// [active_top.FindIndex(active_top,x -> x = s)] := ''
-        //print(active_top);   
       end
       else NotAction := 0;
-     // print('flag');
     end
     
     else if Graph[y][x]._val > 5 then
@@ -660,29 +644,19 @@ begin
       begin
         NotAction += 1;
         Graph[y][x]._val += randval;
-        active_top := active_top.Slice(0, 1, active_top.FindIndex(active_top,x -> x = s)) + active_top.Slice(active_top.FindIndex(active_top,x -> x = s), 1, length(active_top) - 1) ;
       end
       else NotAction := 0;
-    //  print('notflag');
     end;
    //print(NotAction ,'-', Graph[y][x]._val);
-  // println(New_Way);
   end;
   Graph[GraphHeight - 1][GraphWidth - 1]._val := random(8, 50) ;
   ValWayCheck();
-  
+  //writeln('1');
   
   NotAction := 0;
   
-  setlength(active_top, 0); 
-  for var i := 1 to GraphHeight do // каждой вершине...
-    for var j := 1 to GraphWidth  do
-    begin
-      setlength(active_top, length(active_top) + 1);
-      active_top[length(active_top) - 1] := inttostr((i * 10) + j);
-    end;
   
-for var k := 0 to 20 do
+for var k := 0 to 15 do
 begin
   
     for var i := 0 to length(current_way) - 1 do
@@ -694,22 +668,21 @@ begin
       begin
         NotAction += 1;
         Graph[strtoint(current_way[i][3]) - 1][ord(current_way[i][1]) - 97]._val -= 1;
-        //active_top[active_top.FindIndex(active_top, t -> t = inttostr(((i + 1) * 10) + j + 1))] := ''
       end 
       else NotAction := 0;
-      
-
     end;
   end;
   
-  for var k := 0 to 3 do
+  active_top := '';  
+
+  for var k := 0 to 15 do
    begin
     for var i := 0 to GraphHeight - 1 do // каждой вершине...
       for var j := 0 to GraphWidth - 1  do
       begin
-       if active_top.FindIndex(active_top,x -> x = inttostr(((i + 1) * 10) + j + 1)) = -1 then continue;
+       flag := False;
+       if pos(chr(97 + j) + '-' + inttostr(i + 1), active_top) <> 0 then continue;
        randval := 1;
-      //print(', ', NotAction, '-', Graph[y][x]._val, '(', x, ',', y, ')');
       for var h := 0 to length(Current_way) - 1 do
         if Graph[i][j]._Name = Current_way[h] then 
         begin
@@ -717,8 +690,10 @@ begin
           break;
         end;
       
+      //if k = 0 then
+     // println(active_top);
       
-      if not flag and (Graph[i][j]._val > 5) then
+      if not flag and (Graph[i][j]._val > 2) then
       begin
         Graph[i][j]._val -= randval;
         ValWayCheck();
@@ -727,7 +702,7 @@ begin
         begin
           NotAction += 1;
           Graph[i][j]._val += randval;
-          active_top[active_top.FindIndex(active_top,t -> t = inttostr(((i + 1) * 10) + j + 1))] := ''
+          active_top += chr(97 + j) + '-' + inttostr(i+1);
         end
         else NotAction := 0;
       //  print('notflag');
@@ -736,6 +711,7 @@ begin
     // println(New_Way);
     end;
     end;
+    
     Graph[GraphHeight - 1][GraphWidth - 1]._val := random(8, 50) ;
     ValWayCheck();
   

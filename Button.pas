@@ -9,9 +9,10 @@ b2_1 := new ButtonABC(10, BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Увел�
 b3_1 := new ButtonABC(10, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Увеличить Количество', rgb(255, 100, 100));
 b2_2 := new ButtonABC(245,BHeight * 2 + 15, BWidth + 30, BHeight * 2, 'Уменьшить сложность', rgb(100, 100, 255));
 b3_2 := new ButtonABC(245, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Уменьшить Количество', rgb(100, 100, 255));
-b4 := new ButtonABC(10, BHeight * 8 , BWidth * 2 + 70, BHeight * 2, 'Помощь', clWhite);
-b5 := new ButtonABC(10, BHeight * 10 , BWidth * 2 + 70, BHeight * 2, 'Назад', clWhite);
-b6 := new ButtonABC(10, BHeight * 10 , BWidth * 2 + 45, BHeight * 2, 'Показать Путь', clWhite);
+b4 := new ButtonABC(10, BHeight * 10 - 30 , BWidth * 2 + 70, BHeight * 2, 'Помощь', clWhite);
+b5 := new ButtonABC(1000, 1000 , BWidth * 2 + 70, BHeight * 2, 'Назад', clWhite);
+b6 := new ButtonABC(1000, 1000, 100, 100, 'Показать Путь', clWhite);
+b7 := new ButtonABC(10, BHeight * 8 , BWidth * 2 + 70, BHeight, 'Один путь', clWhite);
 
 procedure b1_OnClick;
 procedure b2_1_OnClick;
@@ -21,6 +22,8 @@ procedure b3_2_OnClick;
 procedure b4_OnClick;
 procedure b5_OnClick;
 procedure b6_OnClick;
+procedure b7_OnClick;
+
 procedure ButtonPosition1;
 procedure ButtonPosition2;
 procedure ButtonPosition3;
@@ -29,13 +32,12 @@ procedure ButtonPosition3;
 implementation
 
 
-  
-
-
   procedure b1_OnClick;
   begin
     if N_Window <> 3 then 
     begin
+      GraphWidth := (6 + dif mod 2); // длинна графа
+      GraphHeight := (2 + dif);// высота графа
       
       assign(f1, 'Условие.txt');
       reset(f1);
@@ -62,7 +64,8 @@ implementation
       GenerateRightWay();
       //print('GenerateRightWay();');
       GenerateGraphVal();
-      GenerateSecondWay();
+      if not ManyWays then
+      CorrectGraphVal();
       ValWayCheck();
       //print(' GenerateGraphVal();');
       
@@ -88,8 +91,8 @@ implementation
     if N_Window <> 3 then 
     begin
       if dif < 5 then dif += 1;
-      GraphWidth := (6 + dif mod 2); // длинна графа
-      GraphHeight := (2 + dif);// высота графа
+      //GraphWidth := (6 + dif mod 2); // длинна графа
+      //GraphHeight := (2 + dif);// высота графа
       if n_window = 1 then Textout1();
       if n_window = 2 then Textout2();
     end;
@@ -112,8 +115,8 @@ implementation
     if N_Window <> 3 then 
     begin
       if dif > 1 then dif -= 1;
-      GraphWidth := (6 + dif mod 2); // длинна графа
-      GraphHeight := (2 + dif);// высота графа
+      //GraphWidth := (6 + dif mod 2); // длинна графа
+      //GraphHeight := (2 + dif);// высота графа
       if n_window = 1 then Textout1();
       if n_window = 2 then Textout2();
     end;
@@ -186,6 +189,21 @@ implementation
     end;
   end;
   
+
+  procedure b7_OnClick();
+  begin
+    if b7.Text = 'Один путь' then
+    begin
+      b7.Text := 'Два пути';
+      ManyWays := True;
+    end
+    else
+    begin
+      b7.Text := 'Один путь';
+      ManyWays := False;
+    end;
+  end;
+
   
   procedure ButtonPosition1();
   begin
@@ -199,6 +217,7 @@ implementation
     b2_2.Visible := True;
     b4.Visible := True;
     b6.Visible := False;
+    b7.Visible := True;
     
     b1.Text := 'Сгенерировать';
     b1.Height := BHeight * 2;
@@ -223,8 +242,20 @@ implementation
     
     b4.Height := BHeight * 2;
     b4.Width := BWidth * 2 + 70;
-    b4.Position := (10, BHeight * 8);
+    b4.Position := (10, BHeight * 10 - 30);
     
+    b5.Height := BHeight;
+    b5.Width := BWidth + 55;
+    b5.Position := (1000, 1000);
+    
+    
+    b6.Height := 100;
+    b6.Width := 100;
+    b6.Position := (1000, 1000);
+    
+    b7.Height := BHeight;
+    b7.Width := BWidth * 2 + 70;
+    b7.Position := (10, BHeight * 8);
   end;
   
   
@@ -241,6 +272,11 @@ implementation
     b4.Visible := True;
     b5.Visible := False;
     b6.Visible := True;
+    
+    if GraphHeight > 3 then
+      b7.Visible := true
+    else
+      b7.Visible := false;
   
     b1.Text := 'Сгенерировать еще'; // меняет параметры  1-ой кнопки под основное окно
     b1.Height := BHeight;
@@ -275,6 +311,9 @@ implementation
     b6.Width := BWidth + 45;
     b6.Position := (BWidth * 2 + 125 + b5.Width , BHeight * 13 + 10);
     
+    b7.Height := BHeight;
+    b7.Width := BWidth;
+    b7.Position := (800, 90)
   end; //меняет параметры кнопок под основное окно
   
 
@@ -287,6 +326,7 @@ implementation
     b2_2.Visible := False;
     b4.Visible := False;
     b6.Visible := False;
+    b7.Visible := False;
     
     b5.Height := BHeight;
     b5.Width := BWidth + 55;
