@@ -39,7 +39,7 @@ implementation
       GraphWidth := (6 + dif mod 2); // длинна графа
       GraphHeight := (2 + dif);// высота графа
       
-      assign(f1, 'Условие.txt');
+      assign(f1, 'Condition.txt');
       reset(f1);
       readln(f1, s);
       close(f1);

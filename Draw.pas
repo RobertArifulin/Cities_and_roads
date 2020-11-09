@@ -123,7 +123,7 @@ begin
          textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 7, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , 'Start');
 
         
-       textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 20, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 10, inttostr(Graph[i - 1][j - 1]._NewMinWayVal)); // вывод параметра, для проверки работы алгоритма
+       //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 20, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 10, inttostr(Graph[i - 1][j - 1]._NewMinWayVal)); // вывод параметра, для проверки работы алгоритма
        brush.Color := argb(0,0,0,0);// настраиваем шрифт подписи координат
        Font.Color := clBlack;
        Font.Size := 24;
