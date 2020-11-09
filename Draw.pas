@@ -44,10 +44,10 @@ procedure HelpWindow(); // рисует окно помощи (не сделан
 var
 p1, p2 : Picture;
 begin
-  p1 := Picture.Create('1.png');
-  p1.Load('1.png');
-  p2 := Picture.Create('2.png');
-  p2.Load('2.png');
+  p1 := Picture.Create('setting\1.png');
+  p1.Load('Setting\1.png');
+  p2 := Picture.Create('setting\2.png');
+  p2.Load('Setting\2.png');
   Window.Clear();
   SetWindowSize(1000, 800); // параметры окна
   SetWindowLeft(ScreenWidth div 2 - 500);

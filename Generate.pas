@@ -469,14 +469,14 @@ begin
       Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) + 1);
       continue;
     end;
-    if ((PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'up') and (GoUp < GraphHeight div 2) then
+    if ((PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'up') then
     begin
       GoUp += 1;
       setlength(Current_Way, length(Current_Way) + 1);
       Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) - 1);
       continue;
     end;
-    if ((PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'left') and (GoLeft < GraphWidth div 2) then
+    if ((PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'left') then
     begin
       GoLeft += 1;
       setlength(Current_Way, length(Current_Way) + 1);
