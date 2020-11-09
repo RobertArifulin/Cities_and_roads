@@ -62,8 +62,9 @@ implementation
       //InterestingWayVal();
       font.Size := 12;
       GenerateRightWay();
-      //print('GenerateRightWay();');
+      println('1');
       GenerateGraphVal();
+      println('2');
       if not ManyWays then
       CorrectGraphVal();
       ValWayCheck();
@@ -76,7 +77,6 @@ implementation
       Textout2();
       ButtonPosition2();
       b4.Visible := True;
-     
       
       NextNameFile();
       DrawGraphFile();
@@ -95,6 +95,10 @@ implementation
       //GraphHeight := (2 + dif);// высота графа
       if n_window = 1 then Textout1();
       if n_window = 2 then Textout2();
+      if dif > 1 then
+        b7.Visible := True
+      else
+        b7.Visible := false;
     end;
   end;
   
@@ -110,7 +114,7 @@ implementation
   end;
   
   
-  procedure b2_2_OnClick;// увеличивает сложность, при нажатии
+  procedure b2_2_OnClick;// уменьшает сложность, при нажатии
   begin
     if N_Window <> 3 then 
     begin
@@ -119,6 +123,10 @@ implementation
       //GraphHeight := (2 + dif);// высота графа
       if n_window = 1 then Textout1();
       if n_window = 2 then Textout2();
+      if dif > 1 then
+        b7.Visible := True
+      else
+        b7.Visible := false;
     end;
   end;
   
@@ -192,16 +200,16 @@ implementation
 
   procedure b7_OnClick();
   begin
-    if b7.Text = 'Один путь' then
-    begin
-      b7.Text := 'Два пути';
-      ManyWays := True;
-    end
-    else
-    begin
-      b7.Text := 'Один путь';
-      ManyWays := False;
-    end;
+      if (b7.Text = 'Один путь')then
+      begin
+        b7.Text := 'Два пути';
+        ManyWays := True;
+      end
+      else 
+      begin
+        b7.Text := 'Один путь';
+        ManyWays := False;
+      end;
   end;
 
   
@@ -217,7 +225,8 @@ implementation
     b2_2.Visible := True;
     b4.Visible := True;
     b6.Visible := False;
-    b7.Visible := True;
+    b7.Visible := True;;
+    b7.Redraw();
     
     b1.Text := 'Сгенерировать';
     b1.Height := BHeight * 2;
@@ -272,12 +281,9 @@ implementation
     b4.Visible := True;
     b5.Visible := False;
     b6.Visible := True;
+    b7.Visible := true;
+    b7.Redraw();
     
-    if GraphHeight > 3 then
-      b7.Visible := true
-    else
-      b7.Visible := false;
-  
     b1.Text := 'Сгенерировать еще'; // меняет параметры  1-ой кнопки под основное окно
     b1.Height := BHeight;
     b1.Width := BWidth;   
@@ -312,8 +318,8 @@ implementation
     b6.Position := (BWidth * 2 + 125 + b5.Width , BHeight * 13 + 10);
     
     b7.Height := BHeight;
-    b7.Width := BWidth;
-    b7.Position := (800, 90)
+    b7.Width := BWidth + 50;
+    b7.Position := (750, 90)
   end; //меняет параметры кнопок под основное окно
   
 

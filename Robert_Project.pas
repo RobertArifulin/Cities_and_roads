@@ -20,6 +20,7 @@ begin
   
   FirstWindow();
   Textout1();
+  ButtonPosition1();
   
   b1.OnClick := procedure ->// нажатие на кнопку сгенерировать перемещает все кнопки
   begin
