@@ -57,16 +57,23 @@ implementation
       
         
       GenerateGraph();
-      //ValWay();
-      //SetWay();
-      //InterestingWayVal();
       font.Size := 12;
       GenerateRightWay();
-      println('1');
+      //println('1');
       GenerateGraphVal();
-      println('2');
+      //println('2');
       if not ManyWays then
+      begin
+        setlength(Second_Way, 0);
+      end
+      else
+      begin
+        FindVertex();
+        GenerateSecondWay();
+      end; 
+      ValWayCheck();
       CorrectGraphVal();
+      
       ValWayCheck();
       //print(' GenerateGraphVal();');
       
@@ -95,10 +102,6 @@ implementation
       //GraphHeight := (2 + dif);// высота графа
       if n_window = 1 then Textout1();
       if n_window = 2 then Textout2();
-      if dif > 1 then
-        b7.Visible := True
-      else
-        b7.Visible := false;
     end;
   end;
   
@@ -123,10 +126,6 @@ implementation
       //GraphHeight := (2 + dif);// высота графа
       if n_window = 1 then Textout1();
       if n_window = 2 then Textout2();
-      if dif > 1 then
-        b7.Visible := True
-      else
-        b7.Visible := false;
     end;
   end;
   

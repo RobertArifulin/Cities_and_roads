@@ -8,9 +8,11 @@ procedure ValWay;
 procedure SetWay; 
 procedure ReadWayCheck;
 procedure GenerateRightWay;
+procedure GenerateSecondWay;
 procedure CorrectGraphVal;
 procedure GenerateGraphVal;
 procedure ValWayCheck;
+procedure FindVertex;
 function PossibleAction(GWidth, GHeight :integer ; Path: array of string) : array of string;
 function CurrentWayCheck(NewPath, CurrentPath: array of string): boolean;
 //function PossibleAction2(GWidth, GHeight :integer ; Path: array of string) : array of string;
@@ -263,7 +265,6 @@ begin
       if (Graph[y - 1][x]._NewMinWayVal < min) and ((y - 1 <> prev_y) or (x <> prev_x))then   
       begin
         min := Graph[y - 1][x]._NewMinWayVal; // min 
-        Graph[y][x]._NewMinWayVal := Graph[y][x]._Val + Graph[y - 1][x]._NewMinWayVal;
       end;
     end;
     if x > 0 then // есть ли сосед слева
@@ -271,7 +272,6 @@ begin
       if (Graph[y][x - 1]._NewMinWayVal < min) and ((y <> prev_y) or (x - 1 <> prev_x)) then   
       begin
         min := Graph[y][x - 1]._NewMinWayVal;
-        Graph[y][x]._NewMinWayVal := Graph[y][x]._Val + Graph[y][x - 1]._NewMinWayVal;
       end;
     end;
     if y < GraphHeight - 1 then // есть ли сосед снизу
@@ -279,7 +279,6 @@ begin
       if (Graph[y + 1][x]._NewMinWayVal < min) and ((y + 1 <> prev_y) or (x <> prev_x)) then   
       begin
         min := Graph[y + 1][x]._NewMinWayVal;
-        Graph[y][x]._NewMinWayVal := Graph[y][x]._Val + Graph[y + 1][x]._NewMinWayVal;
       end;
     end;
     if x < GraphWidth - 1 then // есть ли сосед справа
@@ -287,7 +286,6 @@ begin
       if (Graph[y][x + 1]._NewMinWayVal < min) and ((y <> prev_y) or (x + 1 <> prev_x)) then   
       begin
         min := Graph[y][x + 1]._NewMinWayVal;
-        Graph[y][x]._NewMinWayVal := Graph[y][x]._Val + Graph[y][x + 1]._NewMinWayVal;
       end;
     end;  
     
@@ -428,14 +426,8 @@ begin
         res[length(res) - 1] := 'right';
       end;
     end;
-    
   end;
-  
-  if length(path) = 1 then
-  begin
-    
-  end;
-  
+
   result := res;
 end;
 
@@ -443,7 +435,7 @@ end;
 procedure GenerateRightWay();
 var
 NextAction : integer;
-ar : array of string;
+action : string;
 begin
   
   for var i := 0 to length(Current_Way) - 1 do Current_Way[i] := '';
@@ -460,30 +452,34 @@ begin
     NextAction := 0;
     
     NextAction := random(length(PossibleAction(GraphWidth, GraphHeight, Current_Way)));
+    try
+      action := PossibleAction(GraphWidth, GraphHeight, Current_Way)[NextAction];
+    except
+      Current_Way := Current_Way[1: length(current_way) - 1];
+    end;
     //println('                                                                                                                                                                      '  , (PossibleAction(GraphWidth, GraphHeight, Current_Way)), NextAction);
     //println('                                                                                                                                                                   '  , Current_way);
-   ar := PossibleAction(GraphWidth, GraphHeight, Current_Way);
-   if (PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'down' then
+   if action = 'down' then
     begin
       setlength(Current_Way, length(Current_Way) + 1);
       Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) + 1);
       continue;
     end;
-    if ((PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'up') then
+    if action = 'up' then
     begin
       GoUp += 1;
       setlength(Current_Way, length(Current_Way) + 1);
       Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) - 1);
       continue;
     end;
-    if ((PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'left') then
+    if action = 'left' then
     begin
       GoLeft += 1;
       setlength(Current_Way, length(Current_Way) + 1);
       Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1]) - 1) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]));
       continue;
     end;
-    if (PossibleAction(GraphWidth, GraphHeight, Current_Way))[NextAction] = 'right' then
+    if action = 'right' then
     begin
       setlength(Current_Way, length(Current_Way) + 1);
       Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1]) + 1) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]));
@@ -495,30 +491,13 @@ begin
 end;
 
 
-function CurrentWayCheck(NewPath, CurrentPath: array of string): boolean ;
+procedure FindVertex();
 var
-flag : boolean;
-check : integer;
+flag1, leftinway, upinway, downinway, rightinway :boolean; 
+left, up, down, right, h :integer;
 begin
-  flag := true;
-  reverse(NewPath);
+    setlength(SecondWayVertex, 0);
   
-  if length(NewPath) = length(CurrentPath) then
-  begin
-    for var i := 0 to length(NewPath) - 1 do
-      if NewPath[i] <> CurrentPath[i] then flag := false;
-    if flag then result := true
-    else result := false;   
-  end
-  else result := false;
-  
-end;
-
-
-procedure CorrectGraphVal();
-var
-flag1, leftinway, upinway, downinway, rightinway :boolean; left, up, down, right :integer;
-begin
     for var i := 0 to GraphHeight - 1 do // каждой вершине...
       for var j := 0 to GraphWidth - 1  do
       begin
@@ -531,11 +510,12 @@ begin
         upinway := false;
         downinway := false;
         rightinway := false;
-        for var h := 0 to length(Current_Way) - 1 do
+        for h := length(Current_Way) - 1 downto 0 do
           if Graph[i][j]._Name = Current_Way[h] then 
           begin
-            flag1 := true;
             
+            flag1 := true;
+        
             if h = 0 then
             begin
               if Current_Way[h + 1][1] = 'a' then downinway := true 
@@ -558,49 +538,343 @@ begin
               else if strtoint(Current_Way[h][3]) - strtoint(Current_Way[h + 1][3]) = 1 then upinway := true
               else downinway := true; 
             end;
-            
             break;
           end;
+          
         if not flag1 then continue;
-        
         
         if i > 0 then up := Graph[i - 1][j]._NewMinWayVal;
         if i < GraphHeight - 1 then down := Graph[i + 1][j]._NewMinWayVal; 
         if j > 0 then left := Graph[i][j - 1]._NewMinWayVal;
         if j < GraphWidth - 1 then right := Graph[i][j + 1]._NewMinWayVal;
         
-        if (up = left) then
+        //and (Current_Way.IndexOf() < h)  
+         if (up = left) then
         begin
-          if upinway then Graph[i][j - 1]._Val += 1
-          else Graph[i - 1][j]._Val += 1;
+          if upinway and not leftinway and (Current_Way.IndexOf(Graph[i - 1][j]._Name) < h) then 
+            begin
+              setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+              SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i][j - 1]._Name;
+            end
+          else if leftinway and not upinway and (Current_Way.IndexOf(Graph[i][j - 1]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i - 1][j]._Name;
+          end;
         end
         else if (up = down) then
         begin
-          if upinway then Graph[i + 1][j]._Val += 1
-          else Graph[i - 1][j]._Val += 1;
+          if upinway and not downinway and (Current_Way.IndexOf(Graph[i - 1][j]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i + 1][j]._Name;
+          end
+          else if downinway and not upinway and (Current_Way.IndexOf(Graph[i + 1][j]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i - 1][j]._Name;
+          end
         end
         else if (up = right) then
         begin
-          if upinway then Graph[i][j + 1]._Val += 1
-          else Graph[i - 1][j]._Val += 1;
+          if upinway and not rightinway and (Current_Way.IndexOf(Graph[i - 1][j]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i][j + 1]._Name;
+          end
+          else if not upinway and rightinway and (Current_Way.IndexOf(Graph[i][j + 1]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i - 1][j]._Name;
+          end
         end
         else if(right = left) then
         begin
-          if rightinway then Graph[i][j - 1]._Val += 1
-          else Graph[i][j + 1]._Val += 1;
+          if rightinway and not leftinway and (Current_Way.IndexOf(Graph[i][j + 1]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i][j - 1]._Name;
+          end
+          else if not rightinway and leftinway and (Current_Way.IndexOf(Graph[i][j - 1]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i][j + 1]._Name;
+          end
         end
         else if(right = down) then
         begin
-          if rightinway then Graph[i + 1][j]._Val += 1
-          else  Graph[i][j + 1]._Val += 1;
+          if rightinway and not downinway and (Current_Way.IndexOf(Graph[i][j + 1]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i + 1][j]._Name;
+          end
+          else if not rightinway and downinway and (Current_Way.IndexOf(Graph[i + 1][j]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i][j + 1]._Name;
+          end
         end
         else if(down = left) then
         begin
-          if downinway then Graph[i][j - 1]._Val += 1
-          else  Graph[i + 1][j]._Val += 1
+          if downinway and not leftinway and (Current_Way.IndexOf(Graph[i + 1][j]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i][j - 1]._Name;
+          end
+          else if not downinway and leftinway and (Current_Way.IndexOf(Graph[i][j - 1]._Name) < h) then 
+          begin
+            setlength(SecondWayVertex, length(SecondWayVertex) + 1);
+            SecondWayVertex[length(SecondWayVertex) - 1] := Graph[i + 1][j]._Name;
+          end
         end;
-        
+      end;
+end;
+
+
+procedure GenerateSecondWay();
+var
+x, y, prev_x, prev_y, min: integer;
+Vertex: string;
+Close : string;
+begin
+  
+  while true do
+  begin
+  Vertex := SecondWayVertex[random(length(SecondWayVertex))];
+  x := ord(Vertex[1]) - 96; // координаты последней точки пути
+  y := strtoint(Vertex[3]);
+  if ((x > 1) and (x < GraphWidth)) or ((y > 1) and (y < GraphWidth)) then break;
+  end;
+  close := '';
+  
+  for var i := 0 to length(Current_Way) - 1 do
+  begin
+    if (y = strtoint(current_way[i][3])) and (abs(x - (ord(current_way[i][1]) - 96)) = 1) then
+    begin
+      close := current_way[i];
     end;
+    if (x = ord(current_way[i][1]) - 96) and (abs(y - strtoint(current_way[i][3])) = 1) then
+    begin
+      close := current_way[i];
+    end;
+  end;
+  Second_Way := current_way[current_way.FindIndex(s -> s = close):length(current_way)];
+  reverse(second_way);
+  setlength(Second_Way, length(Second_Way) + 1);
+  Second_Way[length(Second_Way) - 1] := Vertex;
+  
+  
+  prev_x := x - 1; // запоминаем координаты предыдущей вершины
+  prev_y := y - 1;
+  x := x - 1;// запоминаем координаты нынешний вершины
+  y := y - 1;
+  
+ 
+ while (y <> 0) or (x <> 0) do // проходим по всем соседям, находим соседа с минимальной стоимость пути от начала до него
+ begin
+  // println('3');
+
+    //этот блок ищет значение минимальной стоимость пути от начала до нее
+     min := 100000;
+    if y > 0 then // есть ли сосед сверху
+    begin
+      if (Graph[y - 1][x]._NewMinWayVal < min) and ((y - 1 <> prev_y) or (x <> prev_x))then   
+      begin
+        min := Graph[y - 1][x]._NewMinWayVal; // min 
+      end;
+    end;
+    if x > 0 then // есть ли сосед слева
+    begin
+      if (Graph[y][x - 1]._NewMinWayVal < min) and ((y <> prev_y) or (x - 1 <> prev_x)) then   
+      begin
+        min := Graph[y][x - 1]._NewMinWayVal;
+      end;
+    end;
+    if y < GraphHeight - 1 then // есть ли сосед снизу
+     begin
+      if (Graph[y + 1][x]._NewMinWayVal < min) and ((y + 1 <> prev_y) or (x <> prev_x)) then   
+      begin
+        min := Graph[y + 1][x]._NewMinWayVal;
+      end;
+    end;
+    if x < GraphWidth - 1 then // есть ли сосед справа
+    begin
+      if (Graph[y][x + 1]._NewMinWayVal < min) and ((y <> prev_y) or (x + 1 <> prev_x)) then   
+      begin
+        min := Graph[y][x + 1]._NewMinWayVal;
+      end;
+    end;  
+    
+    // этот блок находит соседа с минимальной стоимость пути от начала до него
+    for var i := GraphHeight - 1 downto 0 do
+      for var j := GraphWidth - 1 downto 0  do
+      begin
+        if (Graph[i][j]._NewMinWayVal = min) and ((((i = y + 1) or (i = y - 1)) and (j = x)) or (((j = x + 1) or (j = x - 1)) and (i = y))) then // проверки на сосед ли это и минимальна ли стоимость
+        begin 
+          prev_x := x; // запоминаем координаты предыдущей вершины
+          prev_y := y;
+          x := j; // запоминаем координаты новой, подходящей нам вершины
+          y := i;
+          setlength(Second_Way, length(Second_Way) + 1);
+          Second_Way[length(Second_Way) - 1] := Graph[i][j]._name; // добовляем ее имя в путь
+        end;
+      end;
+  end;
+  reverse(Second_Way);
+  
+end;
+
+
+function CurrentWayCheck(NewPath, CurrentPath: array of string): boolean ;
+var
+flag : boolean;
+begin
+  flag := true;
+  reverse(NewPath);
+  
+  if length(NewPath) = length(CurrentPath) then
+  begin
+    for var i := 0 to length(NewPath) - 1 do
+      if NewPath[i] <> CurrentPath[i] then flag := false;
+    if flag then result := true
+    else result := false;   
+  end
+  else result := false;
+  
+end;
+
+
+procedure CorrectGraphVal();
+var
+flag1, leftinway, upinway, downinway, rightinway :boolean; 
+left, up, down, right :integer;
+begin
+  
+    for var i := 0 to GraphHeight - 1 do // каждой вершине...
+      for var j := 0 to GraphWidth - 1  do
+      begin
+        ValWayCheck();
+        left := -1;
+        up := -2;
+        down := -3;
+        right := -4;
+        
+        flag1 := false;
+        leftinway := false;
+        upinway := false;
+        downinway := false;
+        rightinway := false;
+        
+        for var h := 0 to length(Current_Way) - 1 do
+          if Graph[i][j]._Name = Current_Way[h] then 
+          begin
+            flag1 := true;
+            
+             { if ord(Current_Way[h][1]) - ord(Current_Way[h - 1][1]) = 1 then leftinway := true
+              else if ord(Current_Way[h][1]) - ord(Current_Way[h - 1][1]) = -1 then rightinway :=true
+              else if strtoint(Current_Way[h][3]) - strtoint(Current_Way[h - 1][3]) = 1 then upinway := true
+              else downinway := true; 
+              
+              if ord(Current_Way[h][1]) - ord(Current_Way[h + 1][1]) = 1 then leftinway := true
+              else if ord(Current_Way[h][1]) - ord(Current_Way[h + 1][1]) = -1 then rightinway :=true
+              else if strtoint(Current_Way[h][3]) - strtoint(Current_Way[h + 1][3]) = 1 then upinway := true
+              else downinway := true; }
+              
+              if Current_Way.IndexOf(chr(ord(Current_Way[h][1]) - 1) + '-' + current_way[h][3]) <> -1 then leftinway := true;
+              if Current_Way.IndexOf(chr(ord(Current_Way[h][1]) + 1) + '-' + current_way[h][3]) <> -1 then rightinway := true;
+              if Current_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) - 1)) <> -1 then upinway := true;
+              if Current_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) + 1)) <> -1 then downinway := true;
+        
+              
+              if Second_Way.IndexOf(chr(ord(Current_Way[h][1]) - 1) + '-' + current_way[h][3]) <> -1 then leftinway := true;
+              if Second_Way.IndexOf(chr(ord(Current_Way[h][1]) + 1) + '-' + current_way[h][3]) <> -1 then rightinway := true;
+              if Second_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) - 1)) <> -1 then upinway := true;
+              if Second_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) + 1)) <> -1 then downinway := true;
+            break;
+          end;
+          
+        setlength(SecondWayVertex, 0);
+
+         for var h := 0 to length(Second_Way) - 1 do
+          if Graph[i][j]._Name = Second_Way[h] then 
+          begin
+            flag1 := true;
+            
+              {if ord(Second_Way[h][1]) - ord(Second_Way[h - 1][1]) = 1 then leftinway := true
+              else if ord(Second_Way[h][1]) - ord(Second_Way[h - 1][1]) = -1 then rightinway :=true
+              else if strtoint(Second_Way[h][3]) - strtoint(Second_Way[h - 1][3]) = 1 then upinway := true
+              else downinway := true; 
+              
+              if ord(Second_Way[h][1]) - ord(Second_Way[h + 1][1]) = 1 then leftinway := true
+              else if ord(Second_Way[h][1]) - ord(Second_Way[h + 1][1]) = -1 then rightinway :=true
+              else if strtoint(Second_Way[h][3]) - strtoint(Second_Way[h + 1][3]) = 1 then upinway := true
+              else downinway := true; }
+              
+              if Second_Way.IndexOf(chr(ord(Second_Way[h][1]) - 1) + '-' + Second_Way[h][3]) <> -1 then leftinway := true;
+              if Second_Way.IndexOf(chr(ord(Second_Way[h][1]) + 1) + '-' + Second_Way[h][3]) <> -1 then rightinway := true;
+              if Second_Way.IndexOf(chr(ord(Second_Way[h][1])) + '-' + inttostr(strtoint(Second_Way[h][3]) - 1)) <> - 1 then upinway := true;
+              if Second_Way.IndexOf(chr(ord(Second_Way[h][1])) + '-' + inttostr(strtoint(Second_Way[h][3]) + 1)) <> -1 then downinway := true;
+              
+              if Current_Way.IndexOf(chr(ord(Second_Way[h][1]) - 1) + '-' + Second_Way[h][3]) <> -1 then leftinway := true;
+              if Current_Way.IndexOf(chr(ord(Second_Way[h][1]) + 1) + '-' + Second_Way[h][3]) <> -1 then rightinway := true;
+              if Current_Way.IndexOf(chr(ord(Second_Way[h][1])) + '-' + inttostr(strtoint(Second_Way[h][3]) - 1)) <> - 1 then upinway := true;
+              if Current_Way.IndexOf(chr(ord(Second_Way[h][1])) + '-' + inttostr(strtoint(Second_Way[h][3]) + 1)) <> -1 then downinway := true;
+            break;
+          end;
+          
+        if not flag1 then continue;
+        
+        if i > 0 then up := Graph[i - 1][j]._NewMinWayVal;
+        if i < GraphHeight - 1 then down := Graph[i + 1][j]._NewMinWayVal; 
+        if j > 0 then left := Graph[i][j - 1]._NewMinWayVal;
+        if j < GraphWidth - 1 then right := Graph[i][j + 1]._NewMinWayVal;
+         
+        {if (up <= left) or (up >= left) then
+        begin
+          if upinway and not leftinway and (left <= up) then Graph[i][j - 1]._Val += up - left + 1;
+          if leftinway and not upinway and (left >= up) then Graph[i - 1][j]._Val += left - up + 1;
+        end
+        else if (up = down) then
+        begin
+          if upinway and not downinway and (down <= up) then Graph[i + 1][j]._Val += up - down + 1;
+          if downinway and not upinway and (down >= up) then Graph[i - 1][j]._Val += down - up + 1;
+        end
+        else if (up = right) then
+        begin
+          if upinway and not rightinway and (right <= up) then Graph[i][j + 1]._Val += up - right + 1;
+          if not upinway and rightinway and (right >= up) then Graph[i - 1][j]._Val += right - up + 1;
+        end
+        else if(right = left) then
+        begin
+          if rightinway and not leftinway and (left <= right) then Graph[i][j - 1]._Val += right - left + 1;
+          if not rightinway and leftinway and (left >= right) then Graph[i][j + 1]._Val += left - right + 1;
+        end
+        else if(right = down) then
+        begin
+          if rightinway and not downinway and (down <= right) then Graph[i + 1][j]._Val += right - down + 1;
+          if not rightinway and downinway and (down >= right) then Graph[i][j + 1]._Val += down - right + 1;
+        end
+        else if(down = left) then
+        begin
+          if downinway and not leftinway and (left <= down) then Graph[i][j - 1]._Val += down - left + 1;
+          if not downinway and leftinway and (left >= down) then Graph[i + 1][j]._Val += left - down + 1;
+        end;}
+        
+          
+          if (j > 0) and upinway and not leftinway and (left <= up) then Graph[i][j - 1]._Val += up - left + 1;
+          if (i > 0) and leftinway and not upinway and (left >= up) then Graph[i - 1][j]._Val += left - up + 1;
+          if (i < GraphHeight - 1) and upinway and not downinway and (down <= up) then Graph[i + 1][j]._Val += up - down + 1;
+          if (i > 0) and downinway and not upinway and (down >= up) then Graph[i - 1][j]._Val += down - up + 1;
+          if (j < GraphWidth - 1) and upinway and not rightinway and (right <= up) then Graph[i][j + 1]._Val += up - right + 1;
+          if (i > 0) and not upinway and rightinway and (right >= up) then Graph[i - 1][j]._Val += right - up + 1;
+          if (j > 0) and rightinway and not leftinway and (left <= right) then Graph[i][j - 1]._Val += right - left + 1;
+          if (j < GraphWidth - 1) and not rightinway and leftinway and (left >= right) then Graph[i][j + 1]._Val += left - right + 1;
+          if (i < GraphHeight - 1) and rightinway and not downinway and (down <= right) then Graph[i + 1][j]._Val += right - down + 1;
+          if (j < GraphWidth - 1) and not rightinway and downinway and (down >= right) then Graph[i][j + 1]._Val += down - right + 1;
+          if (j > 0) and downinway and not leftinway and (left <= down) then Graph[i][j - 1]._Val += down - left + 1;
+          if (i < GraphHeight - 1) and not downinway and leftinway and (left >= down) then Graph[i + 1][j]._Val += left - down + 1;
+          ValWayCheck();
+      end;
 end;
 
 

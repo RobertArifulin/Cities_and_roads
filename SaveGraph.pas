@@ -11,13 +11,26 @@ procedure WayFile(); // сохроняет путь в файле
 begin
   assign(f, 'Правильные пути.txt');
   Append(f);
-  write(f,inttostr(FileName) + '. Путь: ');
+  write(f,'Граф - ' + inttostr(FileName) + '.Первый Путь: ');
   for var i := 0 to length(current_way) - 1 do
   begin
     Write(f, current_way[i] + '  ');
   end;
-  write(f, 'Стоимость: ');
+  writeln(f, '');
+  write(f,'Граф - ' + inttostr(FileName) + '.Второй Путь: ');
+  if length(second_way) > 0 then
+  begin
+  for var i := 0 to length(second_way) - 1 do
+  begin
+    write(f, second_way[i] + '  ');
+  end;
+  end
+  else
+    write(f, 'нет');
+  writeln(f, '');
+  write(f,'Граф - ' + inttostr(FileName) +  '.Стоимость: ');
   write(f, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._NewMinWayVal + ' ' + #13 );
+  writeln(f, '');
   close(f);
 end; // сохроняет путь в файле
 
@@ -34,13 +47,15 @@ begin
   brush.Color := clWhite;
   p.rectangle(0, 0, 1000, 625);
   
-  Font.Size := 12; // настройки шрифта
+  Font.Size := 15; // настройки шрифта
   pen.Color := clBlack;
-  p.TextOut(5 ,5 , s);
+  p.TextOut(5 , 2 ,'Граф - ' + inttostr(FileName));
+  Font.Size := 12;
+  p.TextOut(5 ,30, s);
     
   pen.Color := clWhite;
   brush.Color := clWhite;
-  p.rectangle(0, 22, 1000, 625);
+  p.rectangle(0, 50, 1000, 625);
   for var i := 1 to 9 do p.line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
   for var i := 1 to 14 do p.line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));
   
