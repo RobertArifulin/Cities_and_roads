@@ -46,8 +46,8 @@ implementation
       
       for var i := 1 to n do
       begin
-     
-      
+
+      SecondVertex := False;
       b5.Visible := False;
       if N_Window <> 2 then
       Prev_N_Window := N_Window;
@@ -55,28 +55,33 @@ implementation
       MainWindow();
       
       
+      while not SecondVertex do
+      begin
         
-      GenerateGraph();
-      font.Size := 12;
-      GenerateRightWay();
-      //println('1');
-      GenerateGraphVal();
-      //println('2');
-      if not ManyWays then
-      begin
-        setlength(Second_Way, 0);
-      end
-      else
-      begin
-        FindVertex();
-        GenerateSecondWay();
-      end; 
-      ValWayCheck();
-      CorrectGraphVal();
-      
-      ValWayCheck();
-      //print(' GenerateGraphVal();');
-      
+        SecondVertex := True;
+        GenerateGraph();
+        font.Size := 12;
+        GenerateRightWay();
+        //println('1');
+        GenerateGraphVal();
+        //println('2');
+        if not ManyWays then
+        begin
+          setlength(Second_Way, 0);
+        end
+        else
+        begin
+          FindVertex();
+          if SecondVertex = False then continue;
+          //println('3');
+          GenerateSecondWay();
+        end; 
+        end;
+        ValWayCheck();
+        CorrectGraphVal();
+        ValWayCheck();
+        //print(' GenerateGraphVal();');
+       
       DrawGraph();
      // print('DrawGraph();');
       

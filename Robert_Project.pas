@@ -9,6 +9,7 @@ begin
   b4.Visible := True;
   b6.Visible := False;
   ManyWays := False;
+  SecondVertex := False;
   FileName := 1;
   FileSession := 1;
   N_Window := 1; //  какое окно открыто

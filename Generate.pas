@@ -516,28 +516,10 @@ begin
             
             flag1 := true;
         
-            if h = 0 then
-            begin
-              if Current_Way[h + 1][1] = 'a' then downinway := true 
-              else  rightinway := true;
-            end
-            else if h = length(Current_Way) - 1 then
-            begin
-              if Current_Way[h - 1][1] = chr(96 + GraphWidth) then upinway := true 
-              else  leftinway := true;
-            end
-            else
-            begin
-              if ord(Current_Way[h][1]) - ord(Current_Way[h - 1][1]) = 1 then leftinway := true
-              else if ord(Current_Way[h][1]) - ord(Current_Way[h - 1][1]) = -1 then rightinway :=true
-              else if strtoint(Current_Way[h][3]) - strtoint(Current_Way[h - 1][3]) = 1 then upinway := true
-              else downinway := true; 
-              
-              if ord(Current_Way[h][1]) - ord(Current_Way[h + 1][1]) = 1 then leftinway := true
-              else if ord(Current_Way[h][1]) - ord(Current_Way[h + 1][1]) = -1 then rightinway :=true
-              else if strtoint(Current_Way[h][3]) - strtoint(Current_Way[h + 1][3]) = 1 then upinway := true
-              else downinway := true; 
-            end;
+            if Current_Way.IndexOf(chr(ord(Current_Way[h][1]) - 1) + '-' + current_way[h][3]) <> -1 then leftinway := true;
+            if Current_Way.IndexOf(chr(ord(Current_Way[h][1]) + 1) + '-' + current_way[h][3]) <> -1 then rightinway := true;
+            if Current_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) - 1)) <> -1 then upinway := true;
+            if Current_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) + 1)) <> -1 then downinway := true;
             break;
           end;
           
@@ -628,6 +610,8 @@ begin
           end
         end;
       end;
+      if length(SecondWayVertex) = 0 then
+        SecondVertex := False;
 end;
 
 
