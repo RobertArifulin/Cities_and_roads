@@ -31,6 +31,7 @@ begin
   write(f,'Граф - ' + inttostr(FileName) +  '.Стоимость: ');
   write(f, Graph[length(graph) - 1][length(Graph[length(graph) - 1]) - 1]._NewMinWayVal + ' ' + #13 );
   writeln(f, '');
+  textout(5, Cell_Size + 35, 'Граф - ' + inttostr(FileName));
   close(f);
 end; // сохроняет путь в файле
 

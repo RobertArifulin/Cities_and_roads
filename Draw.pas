@@ -42,18 +42,15 @@ end; // рисует 1-ое окно
 
 procedure HelpWindow(); // рисует окно помощи (не сделано)
 var
-p1, p2 : Picture;
+p1: Picture;
 begin
-  p1 := Picture.Create('setting\1.png');
-  p1.Load('Setting\1.png');
-  p2 := Picture.Create('setting\2.png');
-  p2.Load('Setting\2.png');
+  p1 := Picture.Create('setting\Help.png');
+  p1.Load('Setting\Help.png');
   Window.Clear();
   SetWindowSize(1000, 800); // параметры окна
   SetWindowLeft(ScreenWidth div 2 - 500);
   SetWindowTop(10);
-  p1.Draw(10,0);
-  p2.Draw(320,0);
+  p1.Draw(0,0);
 end; // рисует окно помощи 
 
 
