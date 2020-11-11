@@ -62,9 +62,9 @@ implementation
         GenerateGraph();
         font.Size := 12;
         GenerateRightWay();
-        //println('1');
+        println('1');
         GenerateGraphVal();
-        //println('2');
+        println('2');
         if not ManyWays then
         begin
           setlength(Second_Way, 0);
@@ -72,8 +72,10 @@ implementation
         else
         begin
           FindVertex();
+          
           if SecondVertex = False then continue;
-          //println('3');
+          
+          println('3');
           GenerateSecondWay();
         end; 
         end;

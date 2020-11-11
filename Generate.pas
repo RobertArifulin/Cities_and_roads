@@ -611,7 +611,9 @@ begin
         end;
       end;
       if length(SecondWayVertex) = 0 then
-        SecondVertex := False;
+        SecondVertex := False
+      else
+        SecondVertex := True;
 end;
 
 
