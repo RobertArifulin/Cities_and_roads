@@ -9,13 +9,15 @@ begin
   b4.Visible := True;
   b6.Visible := False;
   ManyWays := False;
+  FileWay := False;
+  WayError := False;
   SecondVertex := False;
   FileName := 1;
   FileSession := 1;
   N_Window := 1; //  какое окно открыто
   Prev_N_Window := 1;
   dif := 1; //  выбранную сложность графа
-  n := 1; //  колличество генераций
+  generation := 1; //  колличество генераций
   GraphWidth := (6 + dif mod 2); // длинна графа
   GraphHeight := (2 + dif);// высота графа
   
@@ -72,6 +74,11 @@ begin
   b7.OnClick := procedure ->// Кнопка регулирующаю кол-во путей
   begin
     b7_OnClick();
+  end;
+  
+  b8.OnClick := procedure ->// Кнопка регулирующаю кол-во путей
+  begin
+    b8_OnClick();
   end;
 
 end.

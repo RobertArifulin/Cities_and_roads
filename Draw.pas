@@ -17,7 +17,9 @@ procedure CloseWay;
 implementation
 
 
-procedure MainWindow;// все плохо sdadada
+procedure MainWindow;// все плохо
+var
+i, j, h, k: integer;
 begin
   SetWindowSize(1000, 800); // параметры окна
   SetWindowLeft(ScreenWidth div 2 - 500);
@@ -27,8 +29,8 @@ begin
   pen.Color := clWhite; 
   rectangle(0, 55, 1000, 636); // очищает часть окна
   line(0, 730, 1000, 730, rgb(0, 0, 0));
-  for var i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
-  for var i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));  
+  for i := 1 to 9 do line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
+  for i := 1 to 14 do line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));  
 end;
 
 
@@ -59,23 +61,27 @@ begin
   brush.Color := clWhite;
   Font.Size := 15;
   textout(10, BHeight * 6 + 25, 'Сложность сейчас: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
-  textout(10, BHeight * 7, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    '); 
+  textout(10, BHeight * 7, 'Кол-во генераций: ' + inttostr(generation) + '     (1-min, 10-max)    '); 
 end; // выводит сложность и кол-во генераций в начальном окне
 
 
 procedure Textout2(); // выводит кол-во генераций, сложность и путь в основном окне
+var
+text : string;
 begin
   Font.Size := 15;
   Font.Color := clBlack;
   brush.color := clWhite;
   textout(10, BHeight * 13 + 10, 'Сложность следующего графа: ' + inttostr(dif) + '     (1-min, 5-max)    '); 
-  textout(10, BHeight * 13 + 35, 'Кол-во генераций: ' + inttostr(n) + '     (1-min, 10-max)    ');
+  textout(10, BHeight * 13 + 35, 'Кол-во генераций: ' + inttostr(generation) + '     (1-min, 10-max)    ');
   font.Size := 12;
-   textout(10, BHeight * 11 + 55, s);
+  textout(10, BHeight * 11 + 55, s)
 end; // выводит кол-во генераций, сложность и путь в основном окне
 
 
 procedure DrawGraph(); // рисует граф, подписывает вершины
+var
+i, j, h, k: integer;
 begin
   GraphHeight := (2 + dif); // зависимость высоты и ширины от сложности
   GraphWidth := (6 + dif mod 2);
@@ -85,8 +91,8 @@ begin
   textout(5, Cell_Size + 15, 'Сложность графа: ' + inttostr(dif));// выводим сложность графа, уже сгенерированного
   pen.Color := clBlack;
   
-  for var i := 1 to GraphHeight do // перебираем все координаты вершин
-    for var j := 1 to GraphWidth  do
+  for i := 1 to GraphHeight do // перебираем все координаты вершин
+    for j := 1 to GraphWidth  do
       begin
         
         if ((i = 1) and (j = 1)) or ((i = GraphHeight) and (j = GraphWidth)) then
@@ -119,8 +125,10 @@ begin
        if (i = 1) and (j = 1) then
          textout((j + (GraphWidth div 2)) * Cell_size - r div 2 - 7, (i + (2 - GraphHeight div 6)) * Cell_size - 6 , 'Start');
 
-        
+       //ОТЛАДКА
        //textout((j + (GraphWidth div 2)) * Cell_size - r div 2 + 20, (i + (2 - GraphHeight div 6)) * Cell_size + 5 - r div 2 - 10, inttostr(Graph[i - 1][j - 1]._NewMinWayVal)); // вывод параметра, для проверки работы алгоритма
+       //ОТЛАДКА
+       
        brush.Color := argb(0,0,0,0);// настраиваем шрифт подписи координат
        Font.Color := clBlack;
        Font.Size := 24;
@@ -157,17 +165,18 @@ begin
 
 procedure DrawWay();
 var
+i, j, h, k: integer;
 flag : boolean;
 begin
   flag := false;
-  for var i := 1 to GraphHeight do // перебираем все координаты вершин
-    for var j := 1 to GraphWidth  do 
+  for i := 1 to GraphHeight do // перебираем все координаты вершин
+    for j := 1 to GraphWidth  do 
     begin
       
       flag := false;
       if (i > 1) then
       begin
-        for var h := 0 to length(Second_Way) - 1 do
+        for h := 0 to length(Second_Way) - 1 do
           if (Graph[i - 1][j - 1]._Name = Second_Way[h]) then
           begin
             if (h > 0) and (Graph[i - 2][j- 1]._Name = Second_Way[h - 1]) then
@@ -193,7 +202,7 @@ begin
       flag := false;
       if (i < GraphHeight)  then
       begin
-        for var h := 0 to length(Second_Way) - 1 do
+        for h := 0 to length(Second_Way) - 1 do
           if (Graph[i - 1][j - 1]._Name = Second_Way[h]) then
           begin
             if (h > 0) and (Graph[i][j - 1]._Name = Second_Way[h - 1]) then
@@ -219,7 +228,7 @@ begin
       flag := false;
       if (j > 1) then
       begin
-        for var h := 0 to length(Second_Way) - 1 do
+        for h := 0 to length(Second_Way) - 1 do
           if (Graph[i - 1][j - 1]._Name = Second_Way[h])then
           begin
             if (h > 0) and (Graph[i - 1][j - 2]._Name = Second_Way[h - 1]) then
@@ -245,7 +254,7 @@ begin
       flag := false;
       if (j < GraphHeight)  then
         begin
-        for var h := 0 to length(Second_Way) - 1 do
+        for h := 0 to length(Second_Way) - 1 do
           if (Graph[i - 1][j - 1]._Name = Second_Way[h]) then
           begin
             if (h > 0) and (Graph[i - 1][j]._Name = Second_Way[h - 1]) then
@@ -274,7 +283,7 @@ begin
       flag := false;
       if (i > 1) then
       begin
-        for var h := 0 to length(Current_Way) - 1 do
+        for h := 0 to length(Current_Way) - 1 do
           if (Graph[i - 1][j - 1]._Name = Current_Way[h]) then
           begin
             if (h > 0) and (Graph[i - 2][j- 1]._Name = Current_Way[h - 1]) then
@@ -300,7 +309,7 @@ begin
       flag := false;
       if (i < GraphHeight)  then
       begin
-        for var h := 0 to length(Current_Way) - 1 do
+        for h := 0 to length(Current_Way) - 1 do
           if (Graph[i - 1][j - 1]._Name = Current_Way[h]) then
           begin
             if (h > 0) and (Graph[i][j - 1]._Name = Current_Way[h - 1]) then
@@ -326,7 +335,7 @@ begin
       flag := false;
       if (j > 1) then
       begin
-        for var h := 0 to length(Current_Way) - 1 do
+        for h := 0 to length(Current_Way) - 1 do
           if (Graph[i - 1][j - 1]._Name = Current_Way[h])then
           begin
             if (h > 0) and (Graph[i - 1][j - 2]._Name = Current_Way[h - 1]) then
@@ -352,7 +361,7 @@ begin
       flag := false;
       if (j < GraphHeight)  then
         begin
-        for var h := 0 to length(Current_Way) - 1 do
+        for h := 0 to length(Current_Way) - 1 do
           if (Graph[i - 1][j - 1]._Name = Current_Way[h]) then
           begin
             if (h > 0) and (Graph[i - 1][j]._Name = Current_Way[h - 1]) then
@@ -380,9 +389,11 @@ end;
 
 
 procedure CloseWay();
+var
+i, j, h, k: integer;
 begin
- for var i := 1 to GraphHeight do // перебираем все координаты вершин
-    for var j := 1 to GraphWidth  do
+ for i := 1 to GraphHeight do // перебираем все координаты вершин
+    for j := 1 to GraphWidth  do
     begin
       if j <> GraphWidth then
        begin

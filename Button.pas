@@ -1,6 +1,6 @@
 ﻿unit Button; // работает с кнопками
 interface
-uses GraphABC, ABCButtons, Describe, Draw, Generate, SaveGraph;
+uses GraphABC, ABCButtons, Describe, Draw, Generate, SaveGraph, Timers;
 
 var
 
@@ -12,7 +12,8 @@ b3_2 := new ButtonABC(245, BHeight * 4 + 20, BWidth + 30, BHeight * 2, 'Умен
 b4 := new ButtonABC(10, BHeight * 10 - 30 , BWidth * 2 + 70, BHeight * 2, 'Помощь', clWhite);
 b5 := new ButtonABC(1000, 1000 , BWidth * 2 + 70, BHeight * 2, 'Назад', clWhite);
 b6 := new ButtonABC(1000, 1000, 100, 100, 'Показать Путь', clWhite);
-b7 := new ButtonABC(10, BHeight * 8 , BWidth * 2 + 70, BHeight, 'Один путь', clWhite);
+b7 := new ButtonABC(243, BHeight * 8 , 235, BHeight, 'Один путь', clWhite);
+b8 := new ButtonABC(2, BHeight * 8 , 235, BHeight, 'Новый путь', clWhite);
 
 procedure b1_OnClick;
 procedure b2_1_OnClick;
@@ -23,6 +24,7 @@ procedure b4_OnClick;
 procedure b5_OnClick;
 procedure b6_OnClick;
 procedure b7_OnClick;
+procedure b8_OnClick;
 
 procedure ButtonPosition1;
 procedure ButtonPosition2;
@@ -33,18 +35,22 @@ implementation
 
 
   procedure b1_OnClick;
+  var
+  i, k : integer;
+  TryWay : boolean;
   begin
     if N_Window <> 3 then 
     begin
       GraphWidth := (6 + dif mod 2); // длинна графа
       GraphHeight := (2 + dif);// высота графа
+      WayError := False;
       
-      assign(f1, 'Setting\Condition.txt');
+      assign(f1, 'Setting\Condition.txt'); // Узнаем условие задачи
       reset(f1);
       readln(f1, s);
       close(f1);
       
-      for var i := 1 to n do
+      for i := 1 to generation do // генерируем граф столько раз, сколько нужно
       begin
 
       SecondVertex := False;
@@ -55,32 +61,49 @@ implementation
       MainWindow();
       
       
-      while not SecondVertex do
+      while not SecondVertex do // если требуется второй путь, то генерируем граф до тех пор, пока он не появится
       begin
         
-        SecondVertex := True;
+        SecondVertex := True; // генерация основы графа
         GenerateGraph();
         font.Size := 12;
-        GenerateRightWay();
-        println('1');
-        GenerateGraphVal();
-        println('2');
+        TryWay := True;
+        
+        
+        if not FileWay then // генерация пути
+          GenerateRightWay()
+        else                // или копирование пути из файла    
+          WayFromFile();
+        
+        if WayError then
+        begin
+          Font.Size := 18;
+          Textout(10, 300, 'Заданный вами путь некорректен, исправьте его в файле и попробуйте еще раз');
+          Textout(10, 350, 'Или отключите копирование пути из файла нажав "Путь из файла" ');
+          Textout(10, 400, 'Через 15 секунд сгенерируется новый путь');
+          Sleep(15000);
+          MainWindow();
+          GenerateRightWay();
+        end;
+        
+        
+       //println('1');
+        GenerateGraphVal(); // генерируем стоимости вершин
+       // println('2');
         if not ManyWays then
         begin
-          setlength(Second_Way, 0);
+          setlength(Second_Way, 0); // нет второго пути
         end
         else
         begin
-          FindVertex();
-          
-          if SecondVertex = False then continue;
-          
-          println('3');
-          GenerateSecondWay();
+          FindVertex(); // или ищем подходящую вершину
+          if SecondVertex = False then continue; // если не получилочь повторяем
+         // println('3');
+          GenerateSecondWay(); // генерируем путь
         end; 
         end;
         ValWayCheck();
-        CorrectGraphVal();
+        CorrectGraphVal(); // исправляем стоимости и скрываем путь
         ValWayCheck();
         //print(' GenerateGraphVal();');
        
@@ -113,11 +136,11 @@ implementation
   end;
   
   
-  procedure b3_1_OnClick;  // уменьшает кол-во генераций, при нажатии
+  procedure b3_1_OnClick;  // увеличивает кол-во генераций, при нажатии
   begin
     if N_Window <> 3 then 
     begin
-      if n < 10 then n += 1;
+      if generation < 10 then generation += 1;
       if n_window = 1 then Textout1();
       if n_window = 2 then Textout2();
     end;
@@ -141,7 +164,7 @@ implementation
   begin
     if N_Window <> 3 then 
     begin
-      if n > 1 then n -= 1;
+      if generation > 1 then generation -= 1;
       if n_window = 1 then Textout1();
       if n_window = 2 then Textout2();
     end;
@@ -219,6 +242,21 @@ implementation
   end;
 
   
+  procedure b8_OnClick();
+  begin
+    if (b8.Text = 'Новый путь')then
+      begin
+        b8.Text := 'Путь из файла';
+        FileWay := True;
+      end
+      else 
+      begin
+        b8.Text := 'Новый путь';
+        FileWay := False;
+      end;
+  end;
+  
+  
   procedure ButtonPosition1();
   begin
     if N_Window <> 1 then
@@ -231,8 +269,10 @@ implementation
     b2_2.Visible := True;
     b4.Visible := True;
     b6.Visible := False;
-    b7.Visible := True;;
+    b7.Visible := True;
+    b8.Visible := True;
     b7.Redraw();
+    b8.Redraw();
     
     b1.Text := 'Сгенерировать';
     b1.Height := BHeight * 2;
@@ -269,8 +309,12 @@ implementation
     b6.Position := (1000, 1000);
     
     b7.Height := BHeight;
-    b7.Width := BWidth * 2 + 70;
-    b7.Position := (10, BHeight * 8);
+    b7.Width := 235;
+    b7.Position := (243, BHeight * 8);
+    
+    b8.Height := BHeight;
+    b8.Width := 235;
+    b8.Position := (2, BHeight * 8);
   end;
   
   
@@ -289,6 +333,8 @@ implementation
     b6.Visible := True;
     b7.Visible := true;
     b7.Redraw();
+    b8.Visible := true;
+    b8.Redraw();
     
     b1.Text := 'Сгенерировать еще'; // меняет параметры  1-ой кнопки под основное окно
     b1.Height := BHeight;
@@ -325,7 +371,11 @@ implementation
     
     b7.Height := BHeight;
     b7.Width := BWidth + 50;
-    b7.Position := (750, 90)
+    b7.Position := (750, 90);
+    
+    b8.Height := BHeight;
+    b8.Width := BWidth + 50;
+    b8.Position := (750, 145);
   end; //меняет параметры кнопок под основное окно
   
 
@@ -339,6 +389,7 @@ implementation
     b4.Visible := False;
     b6.Visible := False;
     b7.Visible := False;
+    b8.Visible := False;
     
     b5.Height := BHeight;
     b5.Width := BWidth + 55;

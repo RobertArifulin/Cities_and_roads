@@ -8,11 +8,13 @@ procedure NextNameFile;
 implementation
 
 procedure WayFile(); // сохроняет путь в файле
+var
+i: integer;
 begin
   assign(f, 'Правильные пути.txt');
   Append(f);
   write(f,'Граф - ' + inttostr(FileName) + '.Первый Путь: ');
-  for var i := 0 to length(current_way) - 1 do
+  for i := 0 to length(current_way) - 1 do
   begin
     Write(f, current_way[i] + '  ');
   end;
@@ -20,7 +22,7 @@ begin
   write(f,'Граф - ' + inttostr(FileName) + '.Второй Путь: ');
   if length(second_way) > 0 then
   begin
-  for var i := 0 to length(second_way) - 1 do
+  for i := 0 to length(second_way) - 1 do
   begin
     write(f, second_way[i] + '  ');
   end;
@@ -37,6 +39,8 @@ end; // сохроняет путь в файле
 
 
 procedure DrawGraphFile(); // сохроняет граф в файле
+var
+i, j: integer;
 begin
 
   
@@ -57,16 +61,16 @@ begin
   pen.Color := clWhite;
   brush.Color := clWhite;
   p.rectangle(0, 50, 1000, 625);
-  for var i := 1 to 9 do p.line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
-  for var i := 1 to 14 do p.line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));
+  for i := 1 to 9 do p.line(0, i * Cell_size + 5, 1000, i * Cell_size + 5, argb(60,60,60,60));  // разлиновка окна
+  for i := 1 to 14 do p.line(i * Cell_size , 55, i * Cell_size,635, argb(60,60,60,60));
   
   Font.Size := 12; // настройки шрифта
   Font.Color := rgb(130, 130, 130);
   p.textout(5, Cell_Size + 15, 'Сложность графа: ' + inttostr(dif));// выводим сложность графа, уже сгенерированного
   pen.Color := clBlack;
   
-  for var i := 1 to GraphHeight do // перебираем все координаты вершин
-    for var j := 1 to GraphWidth  do
+  for i := 1 to GraphHeight do // перебираем все координаты вершин
+    for j := 1 to GraphWidth  do
       begin
         
         if ((i = 1) and (j = 1)) or ((i = GraphHeight) and (j = GraphWidth)) then
@@ -115,7 +119,6 @@ begin
  
       end;
 end;  // сохроняет граф в файле
-
 
 
 procedure NextNameFile(); // определяет название следующего файла
