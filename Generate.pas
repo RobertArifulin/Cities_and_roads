@@ -358,7 +358,7 @@ end; // запись кратчайшего пути для проверки
 function PossibleAction(GWidth, GHeight :integer ; Path: array of string) : array of string;
 var
 CurrentPoint : String;
-x, y, i: integer;
+x, y, t: integer;
 flag, flag_up, flag_left : boolean;
 res : array of string;
 begin
@@ -373,10 +373,10 @@ begin
   flag_left := false;
   
   if length(path) > 1 then
-    for i := 1 to length(path) - 1 do
+    for t := 1 to length(path) - 1 do
     begin
-       if strtoint(path[i][3]) - strtoint(path[i - 1][3]) = -1 then flag_up := true;
-       if ord(path[i][1]) - ord(path[i - 1][1]) = 1 then flag_left := true;
+       if strtoint(path[t][3]) - strtoint(path[t - 1][3]) = -1 then flag_up := true;
+       if ord(path[t][1]) - ord(path[t - 1][1]) = 1 then flag_left := true;
     end;
   
   if length(path) = 1 then
@@ -392,9 +392,9 @@ begin
     begin
       flag := false; 
       if length(path) > 1 then
-      for i := 0 to length(path) - 2 do // каждой вершине пути
+      for t := 0 to length(path) - 2 do // каждой вершине пути
       begin
-        if abs(ord(path[i][1]) - x - 96) + abs(strtoint(path[i][3]) - (y - 1)) <= 1 then flag := true;              
+        if abs(ord(path[t][1]) - x - 96) + abs(strtoint(path[t][3]) - (y - 1)) <= 1 then flag := true;              
       end;
       
       if not flag and (x > 2) and (x < GWidth - 1) then
@@ -420,9 +420,9 @@ begin
       flag := false;
       
       if length(path) > 1 then
-      for i := 0 to length(path) - 2 do // каждой вершине пути
+      for t := 0 to length(path) - 2 do // каждой вершине пути
       begin
-        if abs(ord(path[i][1]) - x - 96) + abs(strtoint(path[i][3]) - (y + 1)) <= 1 then flag := true;              
+        if abs(ord(path[t][1]) - x - 96) + abs(strtoint(path[t][3]) - (y + 1)) <= 1 then flag := true;              
       end;
       
       if not flag then  
@@ -436,9 +436,9 @@ begin
     if x > 1 then
     begin
       flag := false;
-      for i := 0 to length(path) - 2 do // каждой вершине пути
+      for t := 0 to length(path) - 2 do // каждой вершине пути
       begin
-        if abs(ord(path[i][1]) - 96 - (x - 1)) + abs(strtoint(path[i][3]) - y) <= 1 then flag := true;              
+        if abs(ord(path[t][1]) - 96 - (x - 1)) + abs(strtoint(path[t][3]) - y) <= 1 then flag := true;              
       end;
       if not flag and (y > 2) and (y < GHeight - 1) then
       begin
@@ -463,9 +463,9 @@ begin
       flag := false;
       
       if length(path) > 1 then
-      for i := 0 to length(path) - 2 do // каждой вершине пути
+      for t := 0 to length(path) - 2 do // каждой вершине пути
       begin
-        if abs(ord(path[i][1]) - 96 - (x + 1)) + abs(strtoint(path[i][3]) - y) <= 1 then flag := true;              
+        if abs(ord(path[t][1]) - 96 - (x + 1)) + abs(strtoint(path[t][3]) - y) <= 1 then flag := true;              
       end;
       
       if not flag then
@@ -482,58 +482,112 @@ end;
 
 procedure GenerateRightWay();
 var
-NextAction, i: integer;
-action : string;
+InterestingWay, flag: boolean;
+NextAction, i, maxlen, len, j: integer;
+action: string;
 begin
   
-  for i := 0 to length(Current_Way) - 1 do Current_Way[i] := '';
-  setlength(Current_Way, 0);
   
-  setlength(Current_Way, 1);
-  Current_Way[0] := 'a-1';
+  InterestingWay := False;
   
-  GoLeft := 0;
-  GoUp := 0;
-  
-  while Current_Way[length(Current_Way) - 1] <> (chr(96 + GraphWidth) + '-' + inttostr(GraphHeight)) do
+  while not InterestingWay do
   begin
-    NextAction := 0;
+    i := 0;
+    j := 0;
     
-    NextAction := random(length(PossibleAction(GraphWidth, GraphHeight, Current_Way)));
-    try
-      action := PossibleAction(GraphWidth, GraphHeight, Current_Way)[NextAction];
-    except
-      Current_Way := Current_Way[1: length(current_way) - 1];
-    end;
-    //println('                                                                                                                                                                      '  , (PossibleAction(GraphWidth, GraphHeight, Current_Way)), NextAction);
-    //println('                                                                                                                                                                   '  , Current_way);
-   if action = 'down' then
+    setlength(Current_Way, 1);
+    Current_Way[0] := 'a-1';
+    
+    GoLeft := 0;
+    GoUp := 0;
+  
+    while Current_Way[length(Current_Way) - 1] <> (chr(96 + GraphWidth) + '-' + inttostr(GraphHeight)) do
     begin
-      setlength(Current_Way, length(Current_Way) + 1);
-      Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) + 1);
-      continue;
-    end;
-    if action = 'up' then
-    begin
-      GoUp += 1;
-      setlength(Current_Way, length(Current_Way) + 1);
-      Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) - 1);
-      continue;
-    end;
-    if action = 'left' then
-    begin
-      GoLeft += 1;
-      setlength(Current_Way, length(Current_Way) + 1);
-      Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1]) - 1) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]));
-      continue;
-    end;
-    if action = 'right' then
-    begin
-      setlength(Current_Way, length(Current_Way) + 1);
-      Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1]) + 1) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]));
-      continue;
+      NextAction := 0;
+      
+      NextAction := random(length(PossibleAction(GraphWidth, GraphHeight, Current_Way)));
+      try
+        action := PossibleAction(GraphWidth, GraphHeight, Current_Way)[NextAction];
+      except
+        Current_Way := Current_Way[1: length(current_way) - 1];
+      end;
+      //println('                                                                                                                                                                      '  , (PossibleAction(GraphWidth, GraphHeight, Current_Way)), NextAction);
+      //println('                                                                                                                                                                   '  , Current_way);
+     if action = 'down' then
+      begin
+        setlength(Current_Way, length(Current_Way) + 1);
+        Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) + 1);
+        continue;
+      end;
+      if action = 'up' then
+      begin
+        GoUp += 1;
+        setlength(Current_Way, length(Current_Way) + 1);
+        Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1])) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]) - 1);
+        continue;
+      end;
+      if action = 'left' then
+      begin
+        GoLeft += 1;
+        setlength(Current_Way, length(Current_Way) + 1);
+        Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1]) - 1) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]));
+        continue;
+      end;
+      if action = 'right' then
+      begin
+        setlength(Current_Way, length(Current_Way) + 1);
+        Current_Way[length(Current_Way) - 1] := chr(ord(Current_Way[length(Current_Way) - 2][1]) + 1) + '-' + inttostr(strtoint(Current_Way[length(Current_Way) - 2][3]));
+        continue;
+      end;
     end;
     
+    len := 1;
+    maxlen := 0;
+    i := 0;
+    
+    while i < length(Current_Way) - 1 do
+    begin
+      j := i;
+      len := 1;
+      
+      while (j < length(Current_Way) - 1) and (Current_way[j][1] = Current_way[j + 1][1]) do
+      begin
+        len += 1;
+        if j < length(Current_Way) - 1 then j += 1
+        else break;
+      end;
+
+      if maxlen < len then maxlen := len;
+      
+      j := i;
+      len := 1;
+
+      while (j < length(Current_Way) - 1) and (Current_way[j][3] = Current_way[j + 1][3]) do
+      begin
+        len += 1;
+        if j < length(Current_Way) - 1 then j += 1
+        else break;
+      end;
+      
+      if maxlen < len then maxlen := len;
+
+      i += maxlen - 1;  
+      if i >= length(Current_Way) - 1 then break;
+    end;
+    
+    for i := 0 to length(Current_Way) - 1 do
+    begin
+      if i > 0 then
+      begin
+        if ((strtoint(Current_way[i][3]) - strtoint(Current_way[i - 1][3]) = -1) or (ord(Current_way[i][1]) - Ord(Current_way[i - 1][1]) = -1)) and (maxlen <= (GraphWidth div 2) + 1) and (Current_way[0] = 'a-1')then
+        begin
+          InterestingWay := True;
+          break
+        end;
+      end;
+    end;
+    
+    if InterestingWay then break;
   end;
   
 end;
@@ -621,7 +675,7 @@ begin
         if j < GraphWidth - 1 then right := Graph[i][j + 1]._NewMinWayVal;
         
         //and (Current_Way.IndexOf() < h)  
-         if (up = left) then
+        if (up = left) then
         begin
           if upinway and not leftinway and (Current_Way.IndexOf(Graph[i - 1][j]._Name) < h) then 
             begin
@@ -716,6 +770,11 @@ begin
   while true do
   begin
   Vertex := SecondWayVertex[random(length(SecondWayVertex))];
+  
+  //ОТЛАДКA
+  //Vertex := 'b-2';
+  //ОТЛАДКА
+  
   x := ord(Vertex[1]) - 96; // координаты последней точки пути
   y := strtoint(Vertex[3]);
   if ((x > 1) and (x < GraphWidth)) or ((y > 1) and (y < GraphWidth)) then break;
@@ -837,6 +896,17 @@ flag1, flag2, leftinway, upinway, downinway, rightinway, action, flag:boolean;
 left, up, down, right, i, j, h, n, NotAction, randval :integer;
 active_top, check: string;
 begin
+  
+//ОТЛАДКА
+{
+Graph[0][1]._val := 10;
+Graph[0][2]._val := 20;
+Graph[1][0]._val := 10;
+Graph[1][1]._Val := 20;
+ValWayCheck();
+}
+//ОТЛАДКА
+
 
 for i := 0 to GraphHeight - 1 do // каждой вершине...
   for j := 0 to GraphWidth - 1  do
@@ -866,21 +936,85 @@ for i := 0 to GraphHeight - 1 do // каждой вершине...
         if strtoint(Current_Way[h][3]) - strtoint(Current_Way[h - 1][3]) = 1 then upinway := True;
         if strtoint(Current_Way[h][3]) - strtoint(Current_Way[h - 1][3]) = -1 then downinway := True;
       end;
-      
-      {
-      if Current_Way.IndexOf(chr(ord(Current_Way[h][1]) - 1) + '-' + current_way[h][3]) <> -1 then leftinway := true;
-      if Current_Way.IndexOf(chr(ord(Current_Way[h][1]) + 1) + '-' + current_way[h][3]) <> -1 then rightinway := true;
-      if Current_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) - 1)) <> -1 then upinway := true;
-      if Current_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) + 1)) <> -1 then downinway := true;
-      
-      if Second_Way.IndexOf(chr(ord(Current_Way[h][1]) - 1) + '-' + current_way[h][3]) <> -1 then leftinway := true;
-      if Second_Way.IndexOf(chr(ord(Current_Way[h][1]) + 1) + '-' + current_way[h][3]) <> -1 then rightinway := true;
-      if Second_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) - 1)) <> -1 then upinway := true;
-      if Second_Way.IndexOf(chr(ord(Current_Way[h][1])) + '-' + inttostr(strtoint(current_way[h][3]) + 1)) <> -1 then downinway := true;
-      }break;
-    end;
+    
+    
+      if Second_Way.IndexOf(Current_way[h]) = -1 then
+      begin    
+        if i > 0 then 
+        begin
+          for n := 0 to length(Second_Way) - 1 do
+          if Graph[i - 1][j]._Name = Second_Way[n] then 
+          begin
+            upinway := True;{
+            if (n > 0) then
+            begin
+              if ord(Second_Way[n][1]) - ord(Second_Way[n - 1][1]) = 1 then leftinway := True;
+              if ord(Second_Way[n][1]) - ord(Second_Way[n - 1][1]) = -1 then rightinway := True;
+              if strtoint(Second_Way[n][3]) - strtoint(Second_Way[n - 1][3]) = 1 then upinway := True;
+              if strtoint(Second_Way[n][3]) - strtoint(Second_Way[n - 1][3]) = -1 then downinway := True;
+            end;}
+            break;
+          end;
+        end;
+    
+        if i < GraphHeight - 1 then 
+        begin
+          for n := 0 to length(Second_Way) - 1 do
+          if Graph[i + 1][j]._Name = Second_Way[n] then 
+          begin
+            downinway := True;{
+            if (n > 0) then
+            begin
+              if ord(Second_Way[n][1]) - ord(Second_Way[n - 1][1]) = 1 then leftinway := True;
+              if ord(Second_Way[n][1]) - ord(Second_Way[n - 1][1]) = -1 then rightinway := True;
+              if strtoint(Second_Way[n][3]) - strtoint(Second_Way[n - 1][3]) = 1 then upinway := True;
+              if strtoint(Second_Way[n][3]) - strtoint(Second_Way[n - 1][3]) = -1 then downinway := True;
+            end;}
+            break;
+          end;
+        end;
+    
+        if j > 0 then 
+        begin
+          for n := 0 to length(Second_Way) - 1 do
+          if Graph[i][j - 1]._Name = Second_Way[n] then 
+          begin
+            leftinway := True;{
+            if (n > 0) then
+            begin
+              if ord(Second_Way[n][1]) - ord(Second_Way[n - 1][1]) = 1 then leftinway := True;
+              if ord(Second_Way[n][1]) - ord(Second_Way[n - 1][1]) = -1 then rightinway := True;
+              if strtoint(Second_Way[n][3]) - strtoint(Second_Way[n - 1][3]) = 1 then upinway := True;
+              if strtoint(Second_Way[n][3]) - strtoint(Second_Way[n - 1][3]) = -1 then downinway := True;
+            end;}
+            break;
+          end;
+        end;
+    
+    
+        if j < GraphWidth - 1 then
+        begin
+          for n := 0 to length(Second_Way) - 1 do
+          if Graph[i][j + 1]._Name = Second_Way[n] then 
+          begin
+            rightinway := True;{
+            if (n > 0) then
+            begin
+              if ord(Second_Way[n][1]) - ord(Second_Way[n - 1][1]) = 1 then leftinway := True;
+              if ord(Second_Way[n][1]) - ord(Second_Way[n - 1][1]) = -1 then rightinway := True;
+              if strtoint(Second_Way[n][3]) - strtoint(Second_Way[n - 1][3]) = 1 then upinway := True;
+              if strtoint(Second_Way[n][3]) - strtoint(Second_Way[n - 1][3]) = -1 then downinway := True;
+            end;}
+            break;
+          end;
+        end;
+      end;
+      break;
+     end;
+    
     
     setlength(SecondWayVertex, 0);
+    
     
     for h := 0 to length(Second_Way) - 1 do
     if Graph[i][j]._Name = Second_Way[h] then 
@@ -894,49 +1028,127 @@ for i := 0 to GraphHeight - 1 do // каждой вершине...
         if strtoint(Second_Way[h][3]) - strtoint(Second_Way[h - 1][3]) = 1 then upinway := True;
         if strtoint(Second_Way[h][3]) - strtoint(Second_Way[h - 1][3]) = -1 then downinway := True;
       end;
-      {
-      if Second_Way.IndexOf(chr(ord(Second_Way[h][1]) - 1) + '-' + Second_Way[h][3]) <> -1 then leftinway := true;
-      if Second_Way.IndexOf(chr(ord(Second_Way[h][1]) + 1) + '-' + Second_Way[h][3]) <> -1 then rightinway := true;
-      if Second_Way.IndexOf(chr(ord(Second_Way[h][1])) + '-' + inttostr(strtoint(Second_Way[h][3]) - 1)) <> - 1 then upinway := true;
-      if Second_Way.IndexOf(chr(ord(Second_Way[h][1])) + '-' + inttostr(strtoint(Second_Way[h][3]) + 1)) <> -1 then downinway := true;
       
-      if Current_Way.IndexOf(chr(ord(Second_Way[h][1]) - 1) + '-' + Second_Way[h][3]) <> -1 then leftinway := true;
-      if Current_Way.IndexOf(chr(ord(Second_Way[h][1]) + 1) + '-' + Second_Way[h][3]) <> -1 then rightinway := true;
-      if Current_Way.IndexOf(chr(ord(Second_Way[h][1])) + '-' + inttostr(strtoint(Second_Way[h][3]) - 1)) <> - 1 then upinway := true;
-      if Current_Way.IndexOf(chr(ord(Second_Way[h][1])) + '-' + inttostr(strtoint(Second_Way[h][3]) + 1)) <> -1 then downinway := true;
-      }break;
-    end;
+      if Current_Way.IndexOf(Second_Way[h]) = -1 then
+      begin
+        if i > 0 then 
+        begin
+          for n := 0 to length(Current_Way) - 1 do
+          if Graph[i - 1][j]._Name = Current_Way[n] then 
+          begin
+            upinway := True;
+            {if (n > 0) then
+            begin
+              if ord(Current_Way[n][1]) - ord(Current_Way[n - 1][1]) = 1 then leftinway := True;
+              if ord(Current_Way[n][1]) - ord(Current_Way[n - 1][1]) = -1 then rightinway := True;
+              if strtoint(Current_Way[n][3]) - strtoint(Current_Way[n - 1][3]) = 1 then upinway := True;
+              if strtoint(Current_Way[n][3]) - strtoint(Current_Way[n - 1][3]) = -1 then downinway := True;
+            end;  }
+            break;
+          end;
+        end;
+        
+        if i < GraphHeight - 1 then 
+        begin
+          for n := 0 to length(Current_Way) - 1 do
+          if Graph[i + 1][j]._Name = Current_Way[n] then 
+          begin
+            downinway := True;
+           { if (n > 0) then
+            begin
+              if ord(Current_Way[n][1]) - ord(Current_Way[n - 1][1]) = 1 then leftinway := True;
+              if ord(Current_Way[n][1]) - ord(Current_Way[n - 1][1]) = -1 then rightinway := True;
+              if strtoint(Current_Way[n][3]) - strtoint(Current_Way[n - 1][3]) = 1 then upinway := True;
+              if strtoint(Current_Way[n][3]) - strtoint(Current_Way[n - 1][3]) = -1 then downinway := True;
+            end;  }
+            break;
+          end;
+        end;
+        
+        if j > 0 then 
+        begin
+          for n := 0 to length(Current_Way) - 1 do
+          if Graph[i][j - 1]._Name = Current_Way[n] then 
+          begin
+            leftinway := True;
+            {if (n > 0) then
+            begin
+              if ord(Current_Way[n][1]) - ord(Current_Way[n - 1][1]) = 1 then leftinway := True;
+              if ord(Current_Way[n][1]) - ord(Current_Way[n - 1][1]) = -1 then rightinway := True;
+              if strtoint(Current_Way[n][3]) - strtoint(Current_Way[n - 1][3]) = 1 then upinway := True;
+              if strtoint(Current_Way[n][3]) - strtoint(Current_Way[n - 1][3]) = -1 then downinway := True;
+            end;  }
+            break;
+          end;
+        end;
+        
+        if j < GraphWidth - 1 then 
+        begin
+          for n := 0 to length(Current_Way) - 1 do
+          if Graph[i][j + 1]._Name = Current_Way[n] then 
+          begin
+            rightinway := True;
+            {
+            if (n > 0) then
+            begin
+              if ord(Current_Way[n][1]) - ord(Current_Way[n - 1][1]) = 1 then leftinway := True;
+              if ord(Current_Way[n][1]) - ord(Current_Way[n - 1][1]) = -1 then rightinway := True;
+              if strtoint(Current_Way[n][3]) - strtoint(Current_Way[n - 1][3]) = 1 then upinway := True;
+              if strtoint(Current_Way[n][3]) - strtoint(Current_Way[n - 1][3]) = -1 then downinway := True;
+            end;  }
+            break;
+          end;
+        end;
+      end;
+    
+      break;
+     end;
+    
+    
     
     if not flag1 and not flag2 then continue;
     
+    
+    
     if i > 0 then up := Graph[i - 1][j]._NewMinWayVal;
     if i < GraphHeight - 1 then down := Graph[i + 1][j]._NewMinWayVal; 
     if j > 0 then left := Graph[i][j - 1]._NewMinWayVal;
     if j < GraphWidth - 1 then right := Graph[i][j + 1]._NewMinWayVal;
-    n := 0;
+    n := Graph[0][2]._val;
     
     
+    if (j > 0) and upinway and not leftinway and (left <= up) and (Current_Way.IndexOf(Graph[i][j - 1]._Name) = -1) and (Second_Way.IndexOf(Graph[i][j - 1]._Name) = -1) then Graph[i][j - 1]._Val += up - left + 1;
     
-    if (j > 0) and upinway and not leftinway and (left <= up) then Graph[i][j - 1]._Val += up - left + 1;
-    if (i > 0) and leftinway and not upinway and (left >= up) then Graph[i - 1][j]._Val += left - up + 1;
-    if (i < GraphHeight - 1) and upinway and not downinway and (down <= up) then Graph[i + 1][j]._Val += up - down + 1;
-    if (i > 0) and downinway and not upinway and (down >= up) then Graph[i - 1][j]._Val += down - up + 1;
-    if (j < GraphWidth - 1) and upinway and not rightinway and (right <= up) then Graph[i][j + 1]._Val += up - right + 1;
-    if (i > 0) and not upinway and rightinway and (right >= up) then Graph[i - 1][j]._Val += right - up + 1;
-    if (j > 0) and rightinway and not leftinway and (left <= right) then Graph[i][j - 1]._Val += right - left + 1;
-    if (j < GraphWidth - 1) and not rightinway and leftinway and (left >= right) then Graph[i][j + 1]._Val += left - right + 1;
-    if (i < GraphHeight - 1) and rightinway and not downinway and (down <= right) then Graph[i + 1][j]._Val += right - down + 1;
-    if (j < GraphWidth - 1) and not rightinway and downinway and (down >= right) then Graph[i][j + 1]._Val += down - right + 1;
-    if (j > 0) and downinway and not leftinway and (left <= down) then Graph[i][j - 1]._Val += down - left + 1;
-    if (i < GraphHeight - 1) and not downinway and leftinway and (left >= down) then Graph[i + 1][j]._Val += left - down + 1;
-        
+    if (i > 0) and leftinway and not upinway and (left >= up) and (Current_Way.IndexOf(Graph[i - 1][j]._Name) = -1) and (Second_Way.IndexOf(Graph[i - 1][j]._Name) = -1) then Graph[i - 1][j]._Val += left - up + 1;
+    
+    if (i < GraphHeight - 1) and upinway and not downinway and (down <= up) and (Current_Way.IndexOf(Graph[i + 1][j]._Name) = -1) and (Second_Way.IndexOf(Graph[i + 1][j]._Name) = -1) then Graph[i + 1][j]._Val += up - down + 1;
+    
+    if (i > 0) and downinway and not upinway and (down >= up) and (Current_Way.IndexOf(Graph[i - 1][j]._Name) = -1) and (Second_Way.IndexOf(Graph[i - 1][j]._Name) = -1) then Graph[i - 1][j]._Val += down - up + 1;
+    
+    if (j < GraphWidth - 1) and upinway and not rightinway and (right <= up) and (Current_Way.IndexOf(Graph[i][j + 1]._Name) = -1) and (Second_Way.IndexOf(Graph[i][j + 1]._Name) = -1) then Graph[i][j + 1]._Val += up - right + 1;
+    
+    if (i > 0) and not upinway and rightinway and (right >= up) and (Current_Way.IndexOf(Graph[i - 1][j]._Name) = -1) and (Second_Way.IndexOf(Graph[i - 1][j]._Name) = -1) then Graph[i - 1][j]._Val += right - up + 1;
+    
+    if (j > 0) and rightinway and not leftinway and (left <= right) and (Current_Way.IndexOf(Graph[i][j - 1]._Name) = -1) and (Second_Way.IndexOf(Graph[i][j - 1]._Name) = -1) then Graph[i][j - 1]._Val += right - left + 1;
+    
+    if (j < GraphWidth - 1) and not rightinway and leftinway and (left >= right) and (Current_Way.IndexOf(Graph[i][j + 1]._Name) = -1) and (Second_Way.IndexOf(Graph[i][j + 1]._Name) = -1) then Graph[i][j + 1]._Val += left - right + 1;
+    
+    if (i < GraphHeight - 1) and rightinway and not downinway and (down <= right) and (Current_Way.IndexOf(Graph[i + 1][j]._Name) = -1) and (Second_Way.IndexOf(Graph[i + 1][j]._Name) = -1) then Graph[i + 1][j]._Val += right - down + 1;
+    
+    if (j < GraphWidth - 1) and not rightinway and downinway and (down >= right) and (Current_Way.IndexOf(Graph[i][j + 1]._Name) = -1) and (Second_Way.IndexOf(Graph[i][j + 1]._Name) = -1) then Graph[i][j + 1]._Val += down - right + 1;
+    
+    if (j > 0) and downinway and not leftinway and (left <= down) and (Current_Way.IndexOf(Graph[i][j - 1]._Name) = -1) and (Second_Way.IndexOf(Graph[i][j - 1]._Name) = -1) then Graph[i][j - 1]._Val += down - left + 1;
+    
+    if (i < GraphHeight - 1) and not downinway and leftinway and (left >= down) and (Current_Way.IndexOf(Graph[i + 1][j]._Name) = -1) and (Second_Way.IndexOf(Graph[i + 1][j]._Name) = -1) then Graph[i + 1][j]._Val += left - down + 1;
+     
+    n := Graph[0][2]._val;
     ValWayCheck();
     if i > 0 then up := Graph[i - 1][j]._NewMinWayVal;
-    if i < GraphHeight - 1 then down := Graph[i + 1][j]._NewMinWayVal; 
+    if i < GraphHeight - 1 then down := Graph[i + 1][j]._NewMinWayVal; // нужно проверять только перекрестки
     if j > 0 then left := Graph[i][j - 1]._NewMinWayVal;
     if j < GraphWidth - 1 then right := Graph[i][j + 1]._NewMinWayVal;
-    n := 0;
     
+    n := 0;
   end;
 {
 active_top := '';  

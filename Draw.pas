@@ -49,7 +49,7 @@ begin
   p1 := Picture.Create('setting\Help.png');
   p1.Load('Setting\Help.png');
   Window.Clear();
-  SetWindowSize(1000, 800); // параметры окна
+  SetWindowSize(1120, 800); // параметры окна
   SetWindowLeft(ScreenWidth div 2 - 500);
   SetWindowTop(10);
   p1.Draw(0,0);

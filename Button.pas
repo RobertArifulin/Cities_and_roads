@@ -106,7 +106,8 @@ implementation
         CorrectGraphVal(); // исправляем стоимости и скрываем путь
         ValWayCheck();
         //print(' GenerateGraphVal();');
-       
+      
+      Sleep(1000);
       DrawGraph();
      // print('DrawGraph();');
       
