@@ -392,7 +392,7 @@ implementation
     b7.Visible := False;
     b8.Visible := False;
     
-    b5.Height := BHeight;
+    b5.Height := BHeight - 5;
     b5.Width := BWidth + 55;
     b5.Position := (Window.Width - 3 - b5.Width, Window.Height - 3 - b5.Height);
   end;
